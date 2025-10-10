@@ -10,10 +10,45 @@ This repository now uses a reusable LuaLaTeX template so you can maintain severa
 
 ## Customisation Points
 
-- **Layout & Styling**: Centralised in `styles/ehsancv.sty`. You can tweak margins (`\cvsetgeometry{...}`), section spacing, bullet styles, and footer behaviour in one place.
-- **Branding**: `\cvsetup` supports keys such as `primarycolor`, `linkcolor`, `contactcolor`, `headerlinespread`, `lastupdated`, and PDF metadata (`pdftitle`, `pdfauthor`, etc.). Add or remove contact methods with the helper commands `\cvcontact`, `\cvcontactsep`, and `\cvcontactbreak`.
-- **Icons**: Define reusable SVG-based icons with `\cvsvgicon{name}{path}{height}` (see `cv-config.tex` for examples) and then call `\name` anywhere in the document.
-- **Content Blocks**: The shared environments `highlights`, `onecolentry`, `twocolentry`, etc. live in the style file so every section (experience, projects, achievements, education) stays consistent.
+### `\cvsetup` quick reference
+
+The template exposes a pgfkeys interface so you can keep layout logic in `styles/ehsancv.sty` while describing your personal flavour in `cv-config.tex`. You can combine any of the keys below inside a single `\cvsetup{...}` call.
+
+| Area            | Keys                                                                                                                              | Notes                                                                                                                                                                               |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identity        | `name`, `tagline`                                                                                                                 | Strings appear in the header. Leave `tagline` empty to drop the line.                                                                                                               |
+| Colours         | `primarycolor`, `linkcolor`, `contactcolor`, `taglinecolor`, `namecolor`, `footercolor`                                           | Supply comma-separated RGB values (`{0,79,144}`) or an existing colour name (`{primaryColor}`). `primarycolor` also drives link colours unless you override `linkcolor`/`urlcolor`. |
+| Typography      | `font`, `fontoptions`, `namefont`, `taglinefont`, `contactfont`, `headerlinespread`                                               | `font` targets both main and sans families (use your system font name). Pair it with `fontoptions` for `\setmainfont` / `\setsansfont` options (e.g. `Path = ./assets/fonts/`).     |
+| Header contacts | `contactsep`, `contactbreak`, `contacts`                                                                                          | Use `\cvcontact{icon}{text}[link]` for each item, with `\cvcontactsep` to add separators and `\cvcontactbreak` to wrap to the next line.                                            |
+| Footer          | `showfooter`, `showupdated`, `showpage`, `footer-left`, `footer-right`, `footerfont`, `pageformat`, `updatedlabel`, `lastupdated` | Set boolean flags to `true`/`false`. `footer-left` and `footer-right` accept arbitrary LaTeX (defaults render last-updated + page count).                                           |
+| PDF metadata    | `pdftitle`, `pdfauthor`, `pdfsubject`, `pdfkeywords`                                                                              | Passed through to `hyperref`.                                                                                                                                                       |
+| Section styling | `sectionformat`, `sectionpost`, `sectionleft`, `sectionbefore`, `sectionafter`                                                    | Provide the desired formatting tokens; the defaults already include `\needspace` and `\titlerule`.                                                                                  |
+
+Example: hide the footer, swap the base font, and tone down the section weight:
+
+```tex
+\cvsetup{
+  font          = {Inter},
+  fontoptions   = {Path = ./assets/fonts/},
+  showfooter    = {false},
+  sectionformat = {\Large\bfseries\color{black}},
+  sectionpost   = {},
+  sectionafter  = {0.4 cm}
+}
+```
+
+### Runtime helpers
+
+- `\cvrefreshstyle` re-applies the current section styling. Call it immediately after a second `\cvsetup{...}` block inside the document body if you change section keys mid-stream.
+- `\cvsetgeometry{...}` lets you override the page geometry later (useful for alternate one-page vs multi-page variants).
+- `\cvsvgicon{name}{path}{height}` defines reusable SVG icons. After calling it in your config you can use `\name` inside contacts or elsewhere.
+
+### Layout and content building blocks
+
+- `\makecvheader` prints the header with the configured name, tagline, and contacts.
+- Environments `highlights`, `highlightsforbulletentries`, `onecolentry`, and `twocolentry` keep experience/projects aligned. Wrap bullet lists in the highlights environments for consistent spacing.
+
+See `styles/ehsancv.sty` for the authoritative defaults if you want to clone the structure into another project.
 
 ## Creating Variants
 
