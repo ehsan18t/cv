@@ -1,0 +1,273 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=1.5 cm, % seperation between body and page edge from the top
+    bottom=1.5 cm, % seperation between body and page edge from the bottom
+    left=1.5 cm, % seperation between body and page edge from the left
+    right=1.5 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging 
+]{geometry} % for adjusting page geometry
+
+\usepackage{titlesec} % for customizing section titles
+\usepackage{transparent-nometadata} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{primaryColor}{RGB}{0, 79, 144} % define primary color
+\definecolor{headerLinkColor}{RGB}{0, 51, 102}
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{svg}
+\usepackage{amsmath} % for math
+\usepackage{microtype} % for better typography
+\usepackage[
+    pdftitle={Md. Ehsan Khan's CV},
+    pdfauthor={Md. Ehsan Khan},
+    pdfcreator={LaTeX},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref} % for links, metadata and bookmarks
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
+\usepackage{fancyhdr} % for custom footer/header
+
+% Ensure that generated pdf is machine readable/ATS parsable:
+% Readable fonts per engine
+% \ifPDFTeX
+%     \input{glyphtounicode}
+%     \pdfgentounicode=1
+%     \usepackage[T1]{fontenc}
+%     \usepackage[utf8]{inputenc}
+%     % Use Source Sans Pro with pdfLaTeX for a clean, readable sans-serif
+%     \usepackage[default,scale=1]{lato}
+%     \renewcommand*\familydefault{\sfdefault}
+% \else
+%     % XeLaTeX/LuaLaTeX: use fontspec and a modern sans-serif with fallbacks
+%     \usepackage{fontspec}
+%     \defaultfontfeatures{Ligatures=TeX,Scale=1}
+%     % FONT SETUP: Lato
+%     \ifPDFTeX
+%         \usepackage[T1]{fontenc}
+%         \usepackage[utf8]{inputenc}
+%         \usepackage[default,scale=1]{lato} % Use Lato font
+%         \renewcommand*\familydefault{\sfdefault}
+%     \else
+%         \usepackage{fontspec}
+%         \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+%         \setsansfont{Lato}
+%         \renewcommand*\familydefault{\sfdefault}
+%     \fi
+%     \renewcommand*\familydefault{\sfdefault}
+% \fi
+
+% ==============================
+% FONT SETUP: Inter
+% ==============================
+% This setup requires compiling with XeLaTeX
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+
+% Set the main font to Inter
+\setmainfont{Inter}
+
+% Set the default font family to sans-serif
+\renewcommand*\familydefault{\sfdefault}
+
+% ==============================
+% Custom Footer Setup
+% ==============================
+\fancypagestyle{customFooterStyle}{
+    \fancyhf{} % clear all header and footer
+    % Left side footer: Last updated
+    \fancyfoot[L]{\small\color{gray}\textit{Last updated: October 10, 2025}}
+    % Right side footer: Page number
+    \fancyfoot[R]{\small\color{gray}\textit{Page \thepage{} of \pageref*{LastPage}}}
+    \renewcommand{\headrulewidth}{0pt} % no header rule
+    \renewcommand{\footrulewidth}{0pt} % no footer rule
+}
+\pagestyle{customFooterStyle}
+
+% ==============================
+% Styling
+% ==============================
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0cm} % set column separation
+
+% Slightly increase line spread for readability on screen
+\linespread{1.05}
+
+% Section headings: larger, bold, and colored
+\titleformat{\section}{\needspace{4\baselineskip}\Large\bfseries\color{primaryColor}}{}{0pt}{}[\vspace{2pt}\titlerule]
+
+\titlespacing{\section}{
+    -1pt % left space
+}{
+    0.3 cm % top space
+}{
+    0.2 cm % bottom space
+} % section title spacing
+
+% High-contrast, subtle colored bullets
+\renewcommand\labelitemi{{\color{primaryColor}\small\textbullet}} % custom bullet points
+
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0.2 cm + 0.00001 cm
+    }{
+        0.2 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+} % new environment for the header
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+% ==============================
+% Document Body
+% ==============================
+\begin{document}
+
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
+
+% ===================================================================
+% =========================== Icons =================================
+% ===================================================================
+
+\newcommand{\faCodeforces}{\includesvg[height=1em]{assets/codeforces.svg}}
+\newcommand{\faLeetcode}{\includesvg[height=1.2em]{assets/leetcode.svg}}
+
+% ===================================================================
+% ========================== HEADER =================================
+% ===================================================================
+
+    \begin{header}
+        \textbf{\fontsize{24 pt}{24 pt}\selectfont Md. Ehsan Khan}
+    
+        \vspace{0.3 cm}
+    
+        \normalsize
+        \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}Dhaka, Bangladesh}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        % Email
+        \mbox{\hrefWithoutArrow{mailto:ehsan18t@gmail.com}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}\color{black}ehsan18t@gmail.com}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        % Phone
+        \mbox{\hrefWithoutArrow{tel:+8801641723411}{\color{black}{\footnotesize\faPhone*}\hspace*{0.13cm}\color{black}+8801641723411}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \\
+        % Website
+        \mbox{\hrefWithoutArrow{https://ehsankhan.me/}{\color{headerLinkColor}{\footnotesize\faGlobe}\hspace*{0.13cm}\color{headerLinkColor}ehsankhan.me}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        % LinkedIn
+        \mbox{\hrefWithoutArrow{https://linkedin.com/in/ehsan18t}{\color{headerLinkColor}{\footnotesize\faLinkedinIn}\hspace*{0.13cm}\color{headerLinkColor}ehsan18t}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        % GitHub
+        \mbox{\hrefWithoutArrow{https://github.com/ehsan18t}{\color{headerLinkColor}{\footnotesize\faGithub}\hspace*{0.13cm}\color{headerLinkColor}ehsan18t}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        % Codeforces
+        \mbox{\hrefWithoutArrow{https://codeforces.com/profile/ehsan18t}{\color{headerLinkColor}{\footnotesize\faCodeforces}\hspace*{0.13cm}\color{headerLinkColor}ehsan18t}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        % LeetCode
+        \mbox{\hrefWithoutArrow{https://leetcode.com/u/ehsan18t}{\color{headerLinkColor}{\footnotesize\faLeetcode}\hspace*{0.13cm}\color{headerLinkColor}ehsan18t}}%
+    \end{header}
+
+% ===================================================================
+% ======================== HEADER END ===============================
+% ===================================================================
+
+    \vspace{0.3 cm - 0.3 cm}
+
+% =====================================================================
+% ========================== SECTIONS =================================
+% =====================================================================
+
+    \input{sections/about/full-stack}
+    \input{sections/skills/full-stack}
+    \input{sections/experience}
+    \input{sections/achievements}
+    % \input{sections/publications}
+    \input{sections/projects/creative}
+    \input{sections/education}
+    % \input{sections/references}
+
+% =====================================================================
+% ======================== SECTIONS END ===============================
+% =====================================================================
+
+\end{document}

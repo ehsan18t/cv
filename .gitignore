@@ -1,0 +1,35 @@
+# Latex intermediate and output files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.synctex.gz
+*.synctex.gz(busy)
+*.toc
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.lof
+*.lot
+*.xdv
+
+# Build directories
+out/
+_build/
+latex.out/
+svg-inkscape/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# PDF artifacts
+*.pdf
