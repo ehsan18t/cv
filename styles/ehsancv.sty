@@ -56,6 +56,25 @@
 \def\cv@contactbreak{\\}
 \def\cv@headerlinespread{1.5}
 \def\cv@contactcolor{headerLinkColor}
+\def\cv@namefontcmd{\fontsize{24 pt}{24 pt}\selectfont\bfseries}
+\def\cv@taglinefontcmd{\normalsize\bfseries}
+\def\cv@contactfontcmd{\normalsize}
+\def\cv@namecolor{black}
+\def\cv@taglinecolor{primaryColor}
+\def\cv@showfooter{true}
+\def\cv@showpage{true}
+\def\cv@footercolor{gray}
+\def\cv@footerfontcmd{\small\itshape}
+\def\cv@pageformat{Page \thepage\ of \pageref*{LastPage}}
+\def\cv@footerleftcmd{\cv@renderUpdated}
+\def\cv@footerrightcmd{\cv@renderPage}
+\def\cv@sectionformat{\needspace{4\baselineskip}\Large\bfseries\color{primaryColor}}
+\def\cv@sectionpostformat{\vspace{2pt}\titlerule}
+\def\cv@sectionleftspace{-1pt}
+\def\cv@sectionbeforespace{0.3 cm}
+\def\cv@sectionafterspace{0.2 cm}
+\def\cv@fontname{lato}
+\def\cv@fontoptions{}
 
 % ==============================
 % Helper keys for user configuration
@@ -64,7 +83,7 @@
   name/.code={\def\cv@name{#1}},
   tagline/.code={\def\cv@tagline{#1}},
   contacts/.code={\def\cv@contacts{#1}},
-  primarycolor/.code={\def\cv@primarycolor{#1}\definecolor{primaryColor}{RGB}{#1}\hypersetup{linkcolor=primaryColor,urlcolor=primaryColor,citecolor=primaryColor}},
+  primarycolor/.code={\def\cv@primarycolor{#1}\definecolor{primaryColor}{RGB}{#1}\def\cv@taglinecolor{primaryColor}\hypersetup{linkcolor=primaryColor,urlcolor=primaryColor,citecolor=primaryColor}},
   linkcolor/.code={\def\cv@linkcolor{#1}\definecolor{headerLinkColor}{RGB}{#1}},
   lastupdated/.code={\def\cv@updated{#1}},
   updatedlabel/.code={\def\cv@footerlabel{#1}},
@@ -73,7 +92,25 @@
   contactbreak/.code={\def\cv@contactbreak{#1}},
   headerlinespread/.code={\def\cv@headerlinespread{#1}},
   contactcolor/.code={\def\cv@contactcolor{#1}},
-  font/.code={\setmainfont{#1}},
+  namefont/.code={\def\cv@namefontcmd{#1}},
+  taglinefont/.code={\def\cv@taglinefontcmd{#1}},
+  contactfont/.code={\def\cv@contactfontcmd{#1}},
+  namecolor/.code={\def\cv@namecolor{#1}},
+  taglinecolor/.code={\def\cv@taglinecolor{#1}},
+  showfooter/.code={\def\cv@showfooter{#1}},
+  showpage/.code={\def\cv@showpage{#1}},
+  footercolor/.code={\def\cv@footercolor{#1}},
+  footerfont/.code={\def\cv@footerfontcmd{#1}},
+  footer-left/.code={\def\cv@footerleftcmd{#1}},
+  footer-right/.code={\def\cv@footerrightcmd{#1}},
+  pageformat/.code={\def\cv@pageformat{#1}},
+  sectionformat/.code={\def\cv@sectionformat{#1}},
+  sectionpost/.code={\def\cv@sectionpostformat{#1}},
+  sectionleft/.code={\def\cv@sectionleftspace{#1}},
+  sectionbefore/.code={\def\cv@sectionbeforespace{#1}},
+  sectionafter/.code={\def\cv@sectionafterspace{#1}},
+  font/.code={\def\cv@fontname{#1}\cv@applyfont},
+  fontoptions/.code={\def\cv@fontoptions{#1}\cv@applyfont},
   pdftitle/.code={\hypersetup{pdftitle={#1}}},
   pdfauthor/.code={\hypersetup{pdfauthor={#1}}},
   pdfsubject/.code={\hypersetup{pdfsubject={#1}}},
@@ -105,7 +142,13 @@
 }
 
 \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
-\setmainfont{Inter}
+
+\newcommand{\cv@applyfont}{%
+  \setmainfont[\cv@fontoptions]{\cv@fontname}%
+  \setsansfont[\cv@fontoptions]{\cv@fontname}%
+}
+
+\cv@applyfont
 \renewcommand*\familydefault{\sfdefault}
 
 % ==============================
@@ -118,8 +161,10 @@
 \setlength{\columnsep}{0cm}
 \linespread{1.05}
 
-\titleformat{\section}{\needspace{4\baselineskip}\Large\bfseries\color{primaryColor}}{}{0pt}{}[\vspace{2pt}\titlerule]
-\titlespacing{\section}{-1pt}{0.3 cm}{0.2 cm}
+\newcommand{\cv@applysectionstyle}{%
+  \titleformat{\section}{\cv@sectionformat}{}{0pt}{}[\cv@sectionpostformat]%
+  \titlespacing{\section}{\cv@sectionleftspace}{\cv@sectionbeforespace}{\cv@sectionafterspace}%
+}
 
 \renewcommand\labelitemi{{\color{primaryColor}\small\textbullet}}
 
@@ -208,20 +253,19 @@
   \ifdefempty{\cv@tagline}{}{
     \par
     \vspace{0.15 cm}%
-    {\normalsize\color{primaryColor}\bfseries\cv@tagline}%
+    {\cv@taglinefontcmd\color{\cv@taglinecolor}\cv@tagline}%
   }%
 }
 
 \newcommand{\makecvheader}{%
   \begin{header}
-    {\fontsize{24 pt}{24 pt}\selectfont\bfseries \cv@name}
+    {\cv@namefontcmd\color{\cv@namecolor}\cv@name}
     \par
     \cv@renderTagline
     \ifdefempty{\cv@contacts}{}{
       \par
       \vspace{0.3 cm}
-      \normalsize
-      \cv@contacts
+      {\cv@contactfontcmd \cv@contacts}
     }
   \end{header}
 }
@@ -235,19 +279,41 @@
   }{}
 }
 
+\newcommand{\cv@renderPage}{%
+  \ifdefstring{\cv@showpage}{true}{\cv@pageformat}{}
+}
+
+\newcommand{\cv@applyfootstyle}[1]{%
+  \begingroup
+    \cv@footerfontcmd
+    \color{\cv@footercolor}%
+    #1%
+  \endgroup
+}
+
 \fancypagestyle{cvpagestyle}{%
   \fancyhf{}
-  \fancyfoot[L]{\small\color{gray}\textit{\cv@renderUpdated}}
-  \fancyfoot[R]{\small\color{gray}\textit{Page \thepage\ of \pageref*{LastPage}}}
+  \ifdefstring{\cv@showfooter}{true}{%
+    \fancyfoot[L]{\cv@applyfootstyle{\cv@footerleftcmd}}
+    \fancyfoot[R]{\cv@applyfootstyle{\cv@footerrightcmd}}%
+  }{}
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
 }
 \pagestyle{cvpagestyle}
 
+\AtBeginDocument{\cv@applysectionstyle}
+
 % ==============================
 % Public interface
 % ==============================
-\newcommand{\cvsetup}[1]{\pgfkeys{/ehsancv,#1}}
+\newcommand{\cvsetup}[1]{%
+  \pgfkeys{/ehsancv,#1}%
+}
+
+\newcommand{\cvrefreshstyle}{\cv@applysectionstyle}
 
 % Provide hook for overriding geometry late if desired
 \newcommand{\cvsetgeometry}[1]{\geometry{#1}}
+
+
