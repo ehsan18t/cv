@@ -1,0 +1,253 @@
+% ehsancv.sty - Custom CV template helpers
+% Author: Md. Ehsan Khan (maintained with assistance from GitHub Copilot)
+% This package centralises layout, typographic choices, and helper macros for the CV.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{styles/ehsancv}[2025/10/10 v1.0 Custom CV template]
+
+% ==============================
+% Engine guard (LuaLaTeX / XeLaTeX required for fontspec)
+% ==============================
+\RequirePackage{iftex}
+\ifPDFTeX
+  \PackageError{ehsancv}{This template requires LuaLaTeX or XeLaTeX}{Switch to LuaLaTeX or XeLaTeX in your build recipe.}
+\fi
+
+% ==============================
+% Core packages
+% ==============================
+\RequirePackage{geometry}
+\RequirePackage{titlesec}
+\RequirePackage{transparent-nometadata}
+\RequirePackage{tabularx}
+\RequirePackage{array}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{enumitem}
+\RequirePackage{fontawesome5}
+\RequirePackage{svg}
+\RequirePackage{amsmath}
+\RequirePackage{microtype}
+\RequirePackage{fontspec}
+\RequirePackage{hyperref}
+\RequirePackage{calc}
+\RequirePackage{bookmark}
+\RequirePackage{lastpage}
+\RequirePackage{changepage}
+\RequirePackage{paracol}
+\RequirePackage{ifthen}
+\RequirePackage{needspace}
+\RequirePackage{fancyhdr}
+\RequirePackage{xparse}
+\RequirePackage{pgfkeys}
+\RequirePackage{etoolbox}
+
+% ==============================
+% Defaults and internal state
+% ==============================
+\def\cv@name{}
+\def\cv@tagline{}
+\def\cv@contacts{}
+\def\cv@primarycolor{0,79,144}
+\def\cv@linkcolor{0,51,102}
+\def\cv@updated{\today}
+\def\cv@footerlabel{Last updated:}
+\def\cv@showupdated{true}
+\def\cv@contactsep{\kern 0.25 cm\AND\kern 0.25 cm}
+\def\cv@contactbreak{\\}
+\def\cv@headerlinespread{1.5}
+\def\cv@contactcolor{headerLinkColor}
+
+% ==============================
+% Helper keys for user configuration
+% ==============================
+\pgfkeys{/ehsancv/.is family,/ehsancv,
+  name/.code={\def\cv@name{#1}},
+  tagline/.code={\def\cv@tagline{#1}},
+  contacts/.code={\def\cv@contacts{#1}},
+  primarycolor/.code={\def\cv@primarycolor{#1}\definecolor{primaryColor}{RGB}{#1}\hypersetup{linkcolor=primaryColor,urlcolor=primaryColor,citecolor=primaryColor}},
+  linkcolor/.code={\def\cv@linkcolor{#1}\definecolor{headerLinkColor}{RGB}{#1}},
+  lastupdated/.code={\def\cv@updated{#1}},
+  updatedlabel/.code={\def\cv@footerlabel{#1}},
+  showupdated/.code={\def\cv@showupdated{#1}},
+  contactsep/.code={\def\cv@contactsep{#1}},
+  contactbreak/.code={\def\cv@contactbreak{#1}},
+  headerlinespread/.code={\def\cv@headerlinespread{#1}},
+  contactcolor/.code={\def\cv@contactcolor{#1}},
+  font/.code={\setmainfont{#1}},
+  pdftitle/.code={\hypersetup{pdftitle={#1}}},
+  pdfauthor/.code={\hypersetup{pdfauthor={#1}}},
+  pdfsubject/.code={\hypersetup{pdfsubject={#1}}},
+  pdfkeywords/.code={\hypersetup{pdfkeywords={#1}}},
+  urlcolor/.code={\hypersetup{urlcolor={#1}}}
+}
+
+% Default colors applied once
+\definecolor{primaryColor}{RGB}{0,79,144}
+\definecolor{headerLinkColor}{RGB}{0,51,102}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primaryColor,
+  urlcolor=primaryColor,
+  citecolor=primaryColor
+}
+
+% ==============================
+% Geometry & typography
+% ==============================
+\geometry{
+  ignoreheadfoot,
+  top=1.5 cm,
+  bottom=1.5 cm,
+  left=1.5 cm,
+  right=1.5 cm,
+  footskip=1.0 cm
+}
+
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\setmainfont{Inter}
+\renewcommand*\familydefault{\sfdefault}
+
+% ==============================
+% Section styling and spacing
+% ==============================
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0cm}
+\linespread{1.05}
+
+\titleformat{\section}{\needspace{4\baselineskip}\Large\bfseries\color{primaryColor}}{}{0pt}{}[\vspace{2pt}\titlerule]
+\titlespacing{\section}{-1pt}{0.3 cm}{0.2 cm}
+
+\renewcommand\labelitemi{{\color{primaryColor}\small\textbullet}}
+
+% ==============================
+% Custom environments
+% ==============================
+\newenvironment{highlights}{
+  \begin{itemize}[
+    topsep=0.10 cm,
+    parsep=0.10 cm,
+    partopsep=0pt,
+    itemsep=0pt,
+    leftmargin=0.4 cm + 10pt
+  ]
+}{
+  \end{itemize}
+}
+
+\newenvironment{highlightsforbulletentries}{
+  \begin{itemize}[
+    topsep=0.10 cm,
+    parsep=0.10 cm,
+    partopsep=0pt,
+    itemsep=0pt,
+    leftmargin=10pt
+  ]
+}{
+  \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+  \begin{adjustwidth}{0.2 cm + 0.00001 cm}{0.2 cm + 0.00001 cm}
+}{
+  \end{adjustwidth}
+}
+
+\newenvironment{twocolentry}[2][]{
+  \onecolentry
+  \def\secondColumn{#2}
+  \setcolumnwidth{\fill, 4.5 cm}
+  \begin{paracol}{2}
+}{
+  \switchcolumn \raggedleft \secondColumn
+  \end{paracol}
+  \endonecolentry
+}
+
+\newenvironment{header}{
+  \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{\cv@headerlinespread}
+}{
+  \par\kern\topsep
+}
+
+% ==============================
+% Hyperref tweaks
+% ==============================
+\let\hrefWithoutArrow\href
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+% ==============================
+% Contact helpers
+% ==============================
+\newsavebox\ANDbox
+\sbox\ANDbox{}
+\newcommand{\AND}{\unskip\cleaders\copy\ANDbox\hskip\wd\ANDbox\ignorespaces}
+
+\newcommand{\cvcontactsep}{\cv@contactsep}
+\newcommand{\cvcontactbreak}{\cv@contactbreak}
+
+\NewDocumentCommand{\cvcontact}{m m o}{
+  \mbox{\IfNoValueTF{#3}{%
+      {\color{\cv@contactcolor}{\footnotesize #1}}\hspace*{0.13cm}#2
+    }{%
+      \hrefWithoutArrow{#3}{\color{\cv@contactcolor}{\footnotesize #1}\hspace*{0.13cm}\color{\cv@contactcolor}#2}%
+    }}
+}
+
+\NewDocumentCommand{\cvsvgicon}{m m m}{%
+  \expandafter\newcommand\csname#1\endcsname{\includesvg[height=#3]{#2}}%
+}
+
+% ==============================
+% Header rendering
+% ==============================
+\newcommand{\cv@renderTagline}{%
+  \ifdefempty{\cv@tagline}{}{
+    \par
+    \vspace{0.15 cm}%
+    {\normalsize\color{primaryColor}\bfseries\cv@tagline}%
+  }%
+}
+
+\newcommand{\makecvheader}{%
+  \begin{header}
+    {\fontsize{24 pt}{24 pt}\selectfont\bfseries \cv@name}
+    \par
+    \cv@renderTagline
+    \ifdefempty{\cv@contacts}{}{
+      \par
+      \vspace{0.3 cm}
+      \normalsize
+      \cv@contacts
+    }
+  \end{header}
+}
+
+% ==============================
+% Footer styling
+% ==============================
+\newcommand{\cv@renderUpdated}{%
+  \ifdefstring{\cv@showupdated}{true}{%
+    \ifblank{\cv@updated}{}{\cv@footerlabel\space\cv@updated}%
+  }{}
+}
+
+\fancypagestyle{cvpagestyle}{%
+  \fancyhf{}
+  \fancyfoot[L]{\small\color{gray}\textit{\cv@renderUpdated}}
+  \fancyfoot[R]{\small\color{gray}\textit{Page \thepage\ of \pageref*{LastPage}}}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+\pagestyle{cvpagestyle}
+
+% ==============================
+% Public interface
+% ==============================
+\newcommand{\cvsetup}[1]{\pgfkeys{/ehsancv,#1}}
+
+% Provide hook for overriding geometry late if desired
+\newcommand{\cvsetgeometry}[1]{\geometry{#1}}
