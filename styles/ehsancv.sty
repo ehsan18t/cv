@@ -73,7 +73,9 @@
 \def\cv@sectionleftspace{-1pt}
 \def\cv@sectionbeforespace{0.3 cm}
 \def\cv@sectionafterspace{0.2 cm}
-\def\cv@fontname{lato}
+\def\cv@bodylinespread{1.05}
+\def\cv@itemgap{0pt}
+\def\cv@fontname{Calibri}
 \def\cv@fontoptions{}
 
 % ==============================
@@ -99,6 +101,7 @@
   taglinecolor/.code={\def\cv@taglinecolor{#1}},
   showfooter/.code={\def\cv@showfooter{#1}},
   showpage/.code={\def\cv@showpage{#1}},
+  bodylinespread/.code={\def\cv@bodylinespread{#1}\cv@applylinespread},
   footercolor/.code={\def\cv@footercolor{#1}},
   footerfont/.code={\def\cv@footerfontcmd{#1}},
   footer-left/.code={\def\cv@footerleftcmd{#1}},
@@ -108,7 +111,9 @@
   sectionpost/.code={\def\cv@sectionpostformat{#1}},
   sectionleft/.code={\def\cv@sectionleftspace{#1}},
   sectionbefore/.code={\def\cv@sectionbeforespace{#1}},
+  sectionbeforespace/.code={\def\cv@sectionbeforespace{#1}},
   sectionafter/.code={\def\cv@sectionafterspace{#1}},
+  itemgap/.code={\def\cv@itemgap{#1}},
   font/.code={\def\cv@fontname{#1}\cv@applyfont},
   fontoptions/.code={\def\cv@fontoptions{#1}\cv@applyfont},
   pdftitle/.code={\hypersetup{pdftitle={#1}}},
@@ -159,7 +164,8 @@
 \setlength{\parindent}{0pt}
 \setlength{\topskip}{0pt}
 \setlength{\columnsep}{0cm}
-\linespread{1.05}
+\newcommand{\cv@applylinespread}{\linespread{\cv@bodylinespread}}
+\cv@applylinespread
 
 \newcommand{\cv@applysectionstyle}{%
   \titleformat{\section}{\cv@sectionformat}{}{0pt}{}[\cv@sectionpostformat]%
@@ -176,7 +182,7 @@
     topsep=0.10 cm,
     parsep=0.10 cm,
     partopsep=0pt,
-    itemsep=0pt,
+    itemsep=\cv@itemgap,
     leftmargin=0.4 cm + 10pt
   ]
 }{
@@ -188,7 +194,7 @@
     topsep=0.10 cm,
     parsep=0.10 cm,
     partopsep=0pt,
-    itemsep=0pt,
+    itemsep=\cv@itemgap,
     leftmargin=10pt
   ]
 }{
@@ -260,11 +266,10 @@
 \newcommand{\makecvheader}{%
   \begin{header}
     {\cv@namefontcmd\color{\cv@namecolor}\cv@name}
-    \par
     \cv@renderTagline
     \ifdefempty{\cv@contacts}{}{
       \par
-      \vspace{0.3 cm}
+    %   \vspace{0.3 cm}
       {\cv@contactfontcmd \cv@contacts}
     }
   \end{header}
