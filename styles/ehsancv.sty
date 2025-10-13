@@ -15,6 +15,8 @@
 
 % ==============================
 % Core packages
+\newif\ifcv@hasheaderimage
+\cv@hasheaderimagefalse
 % ==============================
 \RequirePackage{geometry}
 \RequirePackage{titlesec}
@@ -22,6 +24,7 @@
 \RequirePackage{tabularx}
 \RequirePackage{array}
 \RequirePackage[dvipsnames]{xcolor}
+\newlength{\cv@headertextwidthdim}
 \RequirePackage{enumitem}
 \RequirePackage{fontawesome5}
 \RequirePackage{svg}
@@ -40,6 +43,8 @@
 \RequirePackage{xparse}
 \RequirePackage{pgfkeys}
 \RequirePackage{etoolbox}
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
 
 % ==============================
 % Defaults and internal state
@@ -75,8 +80,22 @@
 \def\cv@sectionafterspace{0.2 cm}
 \def\cv@bodylinespread{1.05}
 \def\cv@itemgap{0pt}
+\def\cv@headerimage{}
+\def\cv@headerlayout{center}
+\def\cv@headerimageposition{page}
 \def\cv@fontname{Calibri}
 \def\cv@fontoptions{}
+
+\newlength{\cv@headerimagesizedim}
+\newlength{\cv@headerimageradius}
+\newlength{\cv@headerimagepagegap}
+\newlength{\cv@headerimagetextgap}
+
+\setlength{\cv@headerimagesizedim}{3cm}
+\setlength{\cv@headerimageradius}{0.5\cv@headerimagesizedim}
+\setlength{\cv@headerimagepagegap}{0.15cm}
+\setlength{\cv@headerimagetextgap}{0.15cm}
+\setlength{\cv@headertextwidthdim}{\textwidth}
 
 % ==============================
 % Helper keys for user configuration
@@ -114,6 +133,13 @@
   sectionbeforespace/.code={\def\cv@sectionbeforespace{#1}},
   sectionafter/.code={\def\cv@sectionafterspace{#1}},
   itemgap/.code={\def\cv@itemgap{#1}},
+  headerimage/.code={\def\cv@headerimage{#1}\ifstrempty{#1}{\cv@hasheaderimagefalse}{\cv@hasheaderimagetrue}},
+  headerimagesize/.code={\setlength{\cv@headerimagesizedim}{#1}\setlength{\cv@headerimageradius}{0.5\cv@headerimagesizedim}},
+  headerimagegap/.code={\setlength{\cv@headerimagepagegap}{#1}\setlength{\cv@headerimagetextgap}{#1}},
+  headerimagepagegap/.code={\setlength{\cv@headerimagepagegap}{#1}},
+  headerimagetextgap/.code={\setlength{\cv@headerimagetextgap}{#1}},
+  headerlayout/.code={\def\cv@headerlayout{#1}},
+  headerimageposition/.code={\def\cv@headerimageposition{#1}},
   font/.code={\def\cv@fontname{#1}\cv@applyfont},
   fontoptions/.code={\def\cv@fontoptions{#1}\cv@applyfont},
   pdftitle/.code={\hypersetup{pdftitle={#1}}},
@@ -219,9 +245,12 @@
 }
 
 \newenvironment{header}{
-  \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{\cv@headerlinespread}
+  \setlength{\topsep}{0pt}\par\kern\topsep
+  \begingroup
+  \linespread{\cv@headerlinespread}\selectfont
 }{
   \par\kern\topsep
+  \endgroup
 }
 
 % ==============================
@@ -263,16 +292,100 @@
   }%
 }
 
-\newcommand{\makecvheader}{%
+\newcommand{\cv@headerimagebox}{%
+  \begin{tikzpicture}[baseline=(image.north)]
+    \clip (0,0) circle[radius=\cv@headerimageradius];
+    \node[inner sep=0pt] (image) {\includegraphics[width=\the\cv@headerimagesizedim]{\cv@headerimage}};
+  \end{tikzpicture}
+}
+
+\newcommand{\cv@placeheaderimage}{%
+  \ifcv@hasheaderimage
+    \ifdefstring{\cv@headerimageposition}{page}{%
+      \begin{tikzpicture}[remember picture,overlay]
+  \coordinate (cvHeaderImageCenter) at ($(current page.north east) + (-\cv@headerimageradius - \cv@headerimagepagegap,-\cv@headerimageradius - \cv@headerimagepagegap)$);
+        \begin{scope}
+          \clip (cvHeaderImageCenter) circle[radius=\cv@headerimageradius];
+          \node[anchor=center, inner sep=0] at (cvHeaderImageCenter){\includegraphics[width=\the\cv@headerimagesizedim]{\cv@headerimage}};
+        \end{scope}
+      \end{tikzpicture}%
+    }{}
+  \fi
+}
+
+\newcommand{\cv@computeheadertextwidth}{%
+  \setlength{\cv@headertextwidthdim}{\textwidth}%
+  \ifcv@hasheaderimage
+  \addtolength{\cv@headertextwidthdim}{-\cv@headerimagesizedim}%
+  \addtolength{\cv@headertextwidthdim}{-\cv@headerimagetextgap}%
+  \fi
+}
+
+\newcommand{\cv@renderheadercontent}{%
+  {\cv@namefontcmd\color{\cv@namecolor}\cv@name\par}%
+  \cv@renderTagline
+  \ifdefempty{\cv@contacts}{}{
+    \par
+    {\cv@contactfontcmd \cv@contacts}%
+  }%
+}
+
+\newcommand{\cv@rendercenterheader}{%
   \begin{header}
-    {\cv@namefontcmd\color{\cv@namecolor}\cv@name}
-    \cv@renderTagline
-    \ifdefempty{\cv@contacts}{}{
-      \par
-    %   \vspace{0.3 cm}
-      {\cv@contactfontcmd \cv@contacts}
+    \cv@placeheaderimage
+    \noindent
+    \ifdefstring{\cv@headerimageposition}{page}{%
+      \cv@computeheadertextwidth
+      \begin{minipage}[t]{\dimexpr\cv@headertextwidthdim\relax}
+        \centering
+        \cv@renderheadercontent
+      \end{minipage}%
+    }{
+      \ifcv@hasheaderimage
+  \begin{minipage}[t]{\dimexpr\textwidth - \cv@headerimagesizedim - \cv@headerimagetextgap\relax}
+          \centering
+          \cv@renderheadercontent
+        \end{minipage}%
+        \hfill
+        \cv@headerimagebox
+      \else
+        \centering
+        \cv@renderheadercontent
+      \fi
     }
   \end{header}
+}
+
+\newcommand{\cv@renderleftheader}{%
+  \begin{header}
+    \cv@placeheaderimage
+    \noindent
+    \ifdefstring{\cv@headerimageposition}{page}{%
+      \cv@computeheadertextwidth
+      \begin{minipage}[t]{\dimexpr\cv@headertextwidthdim\relax}
+        \raggedright
+        \cv@renderheadercontent
+      \end{minipage}%
+    }{
+      \ifcv@hasheaderimage
+  \begin{minipage}[t]{\dimexpr\textwidth - \cv@headerimagesizedim - \cv@headerimagetextgap\relax}
+          \raggedright
+          \cv@renderheadercontent
+        \end{minipage}%
+        \hfill
+        \cv@headerimagebox
+      \else
+        \begin{minipage}[t]{\textwidth}
+          \raggedright
+          \cv@renderheadercontent
+        \end{minipage}%
+      \fi
+    }
+  \end{header}
+}
+
+\newcommand{\makecvheader}{%
+  \ifdefstring{\cv@headerlayout}{left}{\cv@renderleftheader}{\cv@rendercenterheader}%
 }
 
 % ==============================
