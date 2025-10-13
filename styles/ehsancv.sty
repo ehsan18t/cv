@@ -58,7 +58,7 @@
 \def\cv@footerlabel{Last updated:}
 \def\cv@showupdated{true}
 \def\cv@contactsep{\kern 0.25 cm\AND\kern 0.25 cm}
-\protected\def\cv@contactbreak{\\[\cv@headercontactslinegap]}
+\protected\def\cv@contactbreak{\unskip\\[\cv@headercontactslinegap]\hspace*{\cv@headercontactsbreakindent}\ignorespaces}
 \def\cv@headerlinespread{1.5}
 \def\cv@contactcolor{headerLinkColor}
 \def\cv@namefontcmd{\fontsize{24 pt}{24 pt}\selectfont\bfseries}
@@ -67,6 +67,7 @@
 \def\cv@headercontactsleading{1}
 \newlength{\cv@headercontactsbaseline}
 \newlength{\cv@headercontactslinegap}
+\newlength{\cv@headercontactsbreakindent}
 \newif\ifcv@headercontactsbaselineset
 \cv@headercontactsbaselinesetfalse
 \def\cv@namecolor{black}
@@ -108,6 +109,7 @@
 \newlength{\cv@headergaptemp}
 \setlength{\cv@headercontactsbaseline}{0pt}
 \setlength{\cv@headercontactslinegap}{0pt}
+\setlength{\cv@headercontactsbreakindent}{0pt}
 
 \newcommand{\cv@setheadercontactsleading}[1]{%
   \edef\cv@tempa{#1}%
@@ -151,6 +153,7 @@
   headercontactslinegap/.code={\setlength{\cv@headercontactslinegap}{#1}},
   headercontactsleading/.code={\cv@setheadercontactsleading{#1}},
   headercontactsbaseline/.code={\setlength{\cv@headercontactsbaseline}{#1}\cv@headercontactsbaselinesettrue},
+  headercontactsbreakindent/.code={\setlength{\cv@headercontactsbreakindent}{#1}},
   contactlinegap/.code={\setlength{\cv@headercontactslinegap}{#1}},% legacy alias
   contactlinespread/.code={\cv@setheadercontactsleading{#1}},% legacy alias
   contactbaselineskip/.code={\setlength{\cv@headercontactsbaseline}{#1}\cv@headercontactsbaselinesettrue},% legacy alias
