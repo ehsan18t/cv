@@ -1,0 +1,45 @@
+{
+  "editor.wordWrap": "on",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "lualatex",
+      "command": "lualatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-shell-escape",
+        "%DOCFILE%"
+      ]
+    },
+    {
+      "name": "latexmk-lualatex",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-lualatex",
+        "-shell-escape",
+        "%DOCFILE%"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "LuaLaTeX",
+      "tools": ["lualatex"]
+    },
+    {
+      "name": "Latexmk (LuaLaTeX)",
+      "tools": ["latexmk-lualatex"]
+    }
+  ],
+  "latex-workshop.latex.outDir": "out",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.message.error.show": true,
+  "latex-workshop.message.warning.show": false,
+  "latex-workshop.chktex.enabled": true,
+  "latex-workshop.intellisense.package.enabled": true
+}

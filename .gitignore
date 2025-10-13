@@ -28,9 +28,6 @@ svg-inkscape/
 .DS_Store
 Thumbs.db
 
-# VS Code
-.vscode/
-
 # PDF artifacts
 *.pdf
 *.synctex(busy)
