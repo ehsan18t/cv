@@ -1,0 +1,78 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage{styles/ehsancv}
+
+\cvsetup{
+  % Size, Spacing and Colors
+  sectionafter  = {0.3 cm},
+  sectionbeforespace = {0.2 cm},
+  % Header
+  headerlayout = {left},
+  headertopgap = {0cm},
+  headerbottomgap = {0.1cm},
+  headertopoffset = {0cm},
+  % Header Image
+  headerimage = {assets/me.png},
+  headerimagesize = {2.5cm},
+  headerimagetopgap   = {1.3cm},
+  headerimagerightgap = {1.5cm},
+  headerimageborderwidth = {1.8pt},
+  headerimagebordercolorrgb = {103, 158, 212},
+  % Name & Title
+  namesize = {28pt},
+  nameaftergap = {1cm},
+  % Body
+  font      = {Calibri},
+  bodylinespread = {1.02},
+  primarycolor = {0,79,144},
+  linkcolor    = {0,51,102},
+  itemgap = {0pt},
+  pdftitle   = {Md. Ehsan Khan's CV},
+  pdfauthor  = {Md. Ehsan Khan},
+  showfooter = {false},
+  showupdated = {false},
+  showpage   = {false},
+  % Contacts
+  headercontactsleading = {0},
+  headercontactsbaseline = {0pt},
+  headercontactslinegap = {-0.2cm},
+  % headercontactsbreakindent = {0.25cm},
+  % Personal Information
+  name       = {Md. Ehsan Khan},
+  contacts = {%% prevent leading space before first contact
+    \cvcontact{\faMapMarker*}{Dhaka, Bangladesh}%
+    \cvcontactsep
+    \cvcontact{\faEnvelope[regular]}{ehsan18t@gmail.com}[mailto:ehsan18t@gmail.com]%
+    \cvcontactsep
+    \cvcontact{\faPhone*}{+8801641723411}[tel:+8801641723411]%
+  \cvcontactbreak
+    \cvcontact{\faGlobe}{ehsankhan.me}[https://ehsankhan.me/]%
+    \cvcontactsep
+    \cvcontact{\faLinkedinIn}{ehsan18t}[https://linkedin.com/in/ehsan18t]%
+    \cvcontactsep
+    \cvcontact{\faGithub}{ehsan18t}[https://github.com/ehsan18t]%
+    \cvcontactsep
+    \cvcontact{\faCodeforces}{ehsan18t}[https://codeforces.com/profile/ehsan18t]%
+    \cvcontactsep
+    \cvcontact{\faLeetcode}{ehsan18t}[https://leetcode.com/u/ehsan18t]%
+  }
+}
+
+% SVG icons used in the header
+\cvsvgicon{faCodeforces}{assets/codeforces.svg}{1em}
+\cvsvgicon{faLeetcode}{assets/leetcode.svg}{1.2em}
+
+
+\begin{document}
+
+\makecvheader
+
+\input{sections/about/java-entry.tex}
+\input{sections/skills/java-entry.tex}
+\input{sections/experience}
+\input{sections/achievements}
+% \input{sections/publications}
+\input{sections/projects/java-entry.tex}
+\input{sections/education}
+% \input{sections/references}
+
+\end{document}
