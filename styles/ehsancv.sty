@@ -71,6 +71,7 @@
 \cv@headercontactsbaselinesetfalse
 \def\cv@namecolor{black}
 \def\cv@taglinecolor{primaryColor}
+\def\cv@headerimagebordercolor{primaryColor}
 \newlength{\cv@nameaftergap}
 \newlength{\cv@titleaftergap}
 \newlength{\cv@headerinfoaftergap}
@@ -100,6 +101,7 @@
 \newlength{\cv@headerimagetopgap}
 \newlength{\cv@headerimagerightgap}
 \newlength{\cv@headerimagetextgap}
+\newlength{\cv@headerimageborderwidth}
 \newlength{\cv@headertopgap}
 \newlength{\cv@headerbottomgap}
 \newlength{\cv@headertopoffset}
@@ -122,6 +124,7 @@
 \setlength{\cv@headerimagetopgap}{\cv@headerimagepagegap}
 \setlength{\cv@headerimagerightgap}{\cv@headerimagepagegap}
 \setlength{\cv@headerimagetextgap}{0.15cm}
+\setlength{\cv@headerimageborderwidth}{1.5pt}
 \setlength{\cv@headertopgap}{0pt}
 \setlength{\cv@headerbottomgap}{0pt}
 \setlength{\cv@headertopoffset}{0pt}
@@ -162,6 +165,8 @@
   contactfont/.code={\def\cv@contactfontcmd{#1}},
   namecolor/.code={\def\cv@namecolor{#1}},
   taglinecolor/.code={\def\cv@taglinecolor{#1}},
+  headerimagebordercolor/.code={\def\cv@headerimagebordercolor{#1}},
+  headerimagebordercolorrgb/.code={\definecolor{cvHeaderImageBorderColor}{RGB}{#1}\def\cv@headerimagebordercolor{cvHeaderImageBorderColor}},
   showfooter/.code={\def\cv@showfooter{#1}},
   showpage/.code={\def\cv@showpage{#1}},
   bodylinespread/.code={\def\cv@bodylinespread{#1}\cv@applylinespread},
@@ -184,6 +189,7 @@
   headerimagetopgap/.code={\setlength{\cv@headerimagetopgap}{#1}},
   headerimagerightgap/.code={\setlength{\cv@headerimagerightgap}{#1}},
   headerimagetextgap/.code={\setlength{\cv@headerimagetextgap}{#1}},
+  headerimageborderwidth/.code={\setlength{\cv@headerimageborderwidth}{#1}},
   headertopgap/.code={\setlength{\cv@headertopgap}{#1}},
   headerbottomgap/.code={\setlength{\cv@headerbottomgap}{#1}},
   headerinfoaftergap/.code={\setlength{\cv@headerinfoaftergap}{#1}},
@@ -354,10 +360,20 @@
 }
 
 \newcommand{\cv@headerimagebox}{%
-  \begin{tikzpicture}[baseline=(image.north)]
-    \clip (0,0) circle[radius=\cv@headerimageradius];
-    \node[inner sep=0pt] (image) {\includegraphics[width=\the\cv@headerimagesizedim]{\cv@headerimage}};
-  \end{tikzpicture}
+  \begin{tikzpicture}[baseline=(image.center)]
+    \node[circle,
+          draw=\cv@headerimagebordercolor,
+          line width=\cv@headerimageborderwidth,
+          inner sep=0pt,
+          minimum size=\dimexpr 2\cv@headerimageradius + \cv@headerimageborderwidth\relax,
+          path picture={
+            \begin{scope}
+              \clip (path picture bounding box.center) circle (\cv@headerimageradius);
+              \node at (path picture bounding box.center) {\includegraphics[width=\the\cv@headerimagesizedim]{\cv@headerimage}};
+            \end{scope}
+          }
+    ] (image) {};
+  \end{tikzpicture}%
 }
 
 \newcommand{\cv@placeheaderimage}{%
@@ -365,10 +381,18 @@
     \ifdefstring{\cv@headerimageposition}{page}{%
       \begin{tikzpicture}[remember picture,overlay]
   \coordinate (cvHeaderImageCenter) at ($(current page.north east) + (-\cv@headerimageradius - \cv@headerimagerightgap,-\cv@headerimageradius - \cv@headerimagetopgap)$);
-        \begin{scope}
-          \clip (cvHeaderImageCenter) circle[radius=\cv@headerimageradius];
-          \node[anchor=center, inner sep=0] at (cvHeaderImageCenter){\includegraphics[width=\the\cv@headerimagesizedim]{\cv@headerimage}};
-        \end{scope}
+    \node[circle,
+      draw=\cv@headerimagebordercolor,
+              line width=\cv@headerimageborderwidth,
+              inner sep=0pt,
+              minimum size=\dimexpr 2\cv@headerimageradius + \cv@headerimageborderwidth\relax,
+              path picture={
+                \begin{scope}
+                  \clip (path picture bounding box.center) circle (\cv@headerimageradius);
+                  \node at (path picture bounding box.center) {\includegraphics[width=\the\cv@headerimagesizedim]{\cv@headerimage}};
+                \end{scope}
+              }
+        ] at (cvHeaderImageCenter) {};
       \end{tikzpicture}%
     }{}
   \fi
