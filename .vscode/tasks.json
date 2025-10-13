@@ -2,15 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "LuaLaTeX build",
+      "label": "LuaLaTeX build (fullstack)",
       "type": "shell",
       "command": "lualatex",
       "args": [
-        "-synctex=1",
+        "-synctex=0",
         "-interaction=nonstopmode",
         "-file-line-error",
         "-shell-escape",
-        "main.tex"
+        "-output-directory=pdf",
+        "-aux-directory=build",
+        "fullstack.tex"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -25,12 +27,68 @@
       "type": "shell",
       "command": "latexmk",
       "args": [
-        "-synctex=1",
+        "-synctex=0",
         "-interaction=nonstopmode",
         "-file-line-error",
         "-lualatex",
         "-shell-escape",
-        "main.tex"
+        "-outdir=pdf",
+        "-auxdir=build",
+        "fullstack.tex"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build"
+    },
+    {
+      "label": "LuaLaTeX build (java-entry)",
+      "type": "shell",
+      "command": "lualatex",
+      "args": [
+        "-synctex=0",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-shell-escape",
+        "-output-directory=pdf",
+        "-aux-directory=build",
+        "java-entry.tex"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build"
+    },
+    {
+      "label": "LuaLaTeX build (backend)",
+      "type": "shell",
+      "command": "lualatex",
+      "args": [
+        "-synctex=0",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-shell-escape",
+        "-output-directory=pdf",
+        "-aux-directory=build",
+        "backend.tex"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build"
+    },
+    {
+      "label": "LuaLaTeX build (frontend)",
+      "type": "shell",
+      "command": "lualatex",
+      "args": [
+        "-synctex=0",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-shell-escape",
+        "-output-directory=pdf",
+        "-aux-directory=build",
+        "frontend.tex"
       ],
       "options": {
         "cwd": "${workspaceFolder}"

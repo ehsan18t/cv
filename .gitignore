@@ -22,12 +22,12 @@
 out/
 _build/
 latex.out/
+build/
 svg-inkscape/
 
 # Editor / OS
 .DS_Store
 Thumbs.db
 
-# PDF artifacts
-*.pdf
+# artifacts
 *.synctex(busy)

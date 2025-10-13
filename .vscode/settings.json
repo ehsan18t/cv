@@ -5,10 +5,12 @@
       "name": "lualatex",
       "command": "lualatex",
       "args": [
-        "-synctex=1",
+        "-synctex=0",
         "-interaction=nonstopmode",
         "-file-line-error",
         "-shell-escape",
+        "-aux-directory=build",
+        "-output-directory=%OUTDIR%",
         "%DOCFILE%"
       ]
     },
@@ -16,11 +18,13 @@
       "name": "latexmk-lualatex",
       "command": "latexmk",
       "args": [
-        "-synctex=1",
+        "-synctex=0",
         "-interaction=nonstopmode",
         "-file-line-error",
         "-lualatex",
         "-shell-escape",
+        "-auxdir=build",
+        "-outdir=%OUTDIR%",
         "%DOCFILE%"
       ]
     }
@@ -35,11 +39,10 @@
       "tools": ["latexmk-lualatex"]
     }
   ],
-  "latex-workshop.latex.outDir": "out",
+  "latex-workshop.latex.outDir": "pdf",
   "latex-workshop.view.pdf.viewer": "tab",
-  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.synctex.afterBuild.enabled": false,
   "latex-workshop.message.error.show": true,
   "latex-workshop.message.warning.show": false,
-  "latex-workshop.chktex.enabled": true,
   "latex-workshop.intellisense.package.enabled": true
 }
