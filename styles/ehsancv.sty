@@ -97,6 +97,8 @@
 \newlength{\cv@headerimagesizedim}
 \newlength{\cv@headerimageradius}
 \newlength{\cv@headerimagepagegap}
+\newlength{\cv@headerimagetopgap}
+\newlength{\cv@headerimagerightgap}
 \newlength{\cv@headerimagetextgap}
 \newlength{\cv@headertopgap}
 \newlength{\cv@headerbottomgap}
@@ -117,6 +119,8 @@
 \setlength{\cv@headerimagesizedim}{3cm}
 \setlength{\cv@headerimageradius}{0.5\cv@headerimagesizedim}
 \setlength{\cv@headerimagepagegap}{0.15cm}
+\setlength{\cv@headerimagetopgap}{\cv@headerimagepagegap}
+\setlength{\cv@headerimagerightgap}{\cv@headerimagepagegap}
 \setlength{\cv@headerimagetextgap}{0.15cm}
 \setlength{\cv@headertopgap}{0pt}
 \setlength{\cv@headerbottomgap}{0pt}
@@ -175,8 +179,10 @@
   itemgap/.code={\def\cv@itemgap{#1}},
   headerimage/.code={\def\cv@headerimage{#1}\ifstrempty{#1}{\cv@hasheaderimagefalse}{\cv@hasheaderimagetrue}},
   headerimagesize/.code={\setlength{\cv@headerimagesizedim}{#1}\setlength{\cv@headerimageradius}{0.5\cv@headerimagesizedim}},
-  headerimagegap/.code={\setlength{\cv@headerimagepagegap}{#1}\setlength{\cv@headerimagetextgap}{#1}},
-  headerimagepagegap/.code={\setlength{\cv@headerimagepagegap}{#1}},
+  headerimagegap/.code={\setlength{\cv@headerimagepagegap}{#1}\setlength{\cv@headerimagetextgap}{#1}\setlength{\cv@headerimagetopgap}{#1}\setlength{\cv@headerimagerightgap}{#1}},
+  headerimagepagegap/.code={\setlength{\cv@headerimagepagegap}{#1}\setlength{\cv@headerimagetopgap}{#1}\setlength{\cv@headerimagerightgap}{#1}},
+  headerimagetopgap/.code={\setlength{\cv@headerimagetopgap}{#1}},
+  headerimagerightgap/.code={\setlength{\cv@headerimagerightgap}{#1}},
   headerimagetextgap/.code={\setlength{\cv@headerimagetextgap}{#1}},
   headertopgap/.code={\setlength{\cv@headertopgap}{#1}},
   headerbottomgap/.code={\setlength{\cv@headerbottomgap}{#1}},
@@ -291,6 +297,7 @@
 \newenvironment{header}{%
   \par
   \vspace*{\dimexpr -\cv@headertopoffset + \cv@headertopgap\relax}% allow caller to lift header into the top margin
+  \nointerlineskip
   \begingroup
   \linespread{\cv@headerlinespread}\selectfont
 }{%
@@ -357,7 +364,7 @@
   \ifcv@hasheaderimage
     \ifdefstring{\cv@headerimageposition}{page}{%
       \begin{tikzpicture}[remember picture,overlay]
-  \coordinate (cvHeaderImageCenter) at ($(current page.north east) + (-\cv@headerimageradius - \cv@headerimagepagegap,-\cv@headerimageradius - \cv@headerimagepagegap)$);
+  \coordinate (cvHeaderImageCenter) at ($(current page.north east) + (-\cv@headerimageradius - \cv@headerimagerightgap,-\cv@headerimageradius - \cv@headerimagetopgap)$);
         \begin{scope}
           \clip (cvHeaderImageCenter) circle[radius=\cv@headerimageradius];
           \node[anchor=center, inner sep=0] at (cvHeaderImageCenter){\includegraphics[width=\the\cv@headerimagesizedim]{\cv@headerimage}};
