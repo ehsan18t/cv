@@ -58,14 +58,22 @@
 \def\cv@footerlabel{Last updated:}
 \def\cv@showupdated{true}
 \def\cv@contactsep{\kern 0.25 cm\AND\kern 0.25 cm}
-\def\cv@contactbreak{\\}
+\protected\def\cv@contactbreak{\\[\cv@headercontactslinegap]}
 \def\cv@headerlinespread{1.5}
 \def\cv@contactcolor{headerLinkColor}
 \def\cv@namefontcmd{\fontsize{24 pt}{24 pt}\selectfont\bfseries}
 \def\cv@taglinefontcmd{\normalsize\bfseries}
 \def\cv@contactfontcmd{\normalsize}
+\def\cv@headercontactsleading{1}
+\newlength{\cv@headercontactsbaseline}
+\newlength{\cv@headercontactslinegap}
+\newif\ifcv@headercontactsbaselineset
+\cv@headercontactsbaselinesetfalse
 \def\cv@namecolor{black}
 \def\cv@taglinecolor{primaryColor}
+\newlength{\cv@nameaftergap}
+\newlength{\cv@titleaftergap}
+\newlength{\cv@headerinfoaftergap}
 \def\cv@showfooter{true}
 \def\cv@showpage{true}
 \def\cv@footercolor{gray}
@@ -90,11 +98,33 @@
 \newlength{\cv@headerimageradius}
 \newlength{\cv@headerimagepagegap}
 \newlength{\cv@headerimagetextgap}
+\newlength{\cv@headertopgap}
+\newlength{\cv@headerbottomgap}
+\newlength{\cv@headertopoffset}
+\newlength{\cv@headergaptemp}
+\setlength{\cv@headercontactsbaseline}{0pt}
+\setlength{\cv@headercontactslinegap}{0pt}
+
+\newcommand{\cv@setheadercontactsleading}[1]{%
+  \edef\cv@tempa{#1}%
+  \ifdim\cv@tempa pt>0pt
+    \edef\cv@headercontactsleading{\cv@tempa}%
+  \else
+    \def\cv@headercontactsleading{1}% fallback to sensible default
+  \fi
+}
 
 \setlength{\cv@headerimagesizedim}{3cm}
 \setlength{\cv@headerimageradius}{0.5\cv@headerimagesizedim}
 \setlength{\cv@headerimagepagegap}{0.15cm}
 \setlength{\cv@headerimagetextgap}{0.15cm}
+\setlength{\cv@headertopgap}{0pt}
+\setlength{\cv@headerbottomgap}{0pt}
+\setlength{\cv@headertopoffset}{0pt}
+\setlength{\cv@headergaptemp}{0pt}
+\setlength{\cv@nameaftergap}{0cm}
+\setlength{\cv@titleaftergap}{0cm}
+\setlength{\cv@headerinfoaftergap}{0cm}
 \setlength{\cv@headertextwidthdim}{\textwidth}
 
 % ==============================
@@ -111,10 +141,20 @@
   showupdated/.code={\def\cv@showupdated{#1}},
   contactsep/.code={\def\cv@contactsep{#1}},
   contactbreak/.code={\def\cv@contactbreak{#1}},
+  headercontactslinegap/.code={\setlength{\cv@headercontactslinegap}{#1}},
+  headercontactsleading/.code={\cv@setheadercontactsleading{#1}},
+  headercontactsbaseline/.code={\setlength{\cv@headercontactsbaseline}{#1}\cv@headercontactsbaselinesettrue},
+  contactlinegap/.code={\setlength{\cv@headercontactslinegap}{#1}},% legacy alias
+  contactlinespread/.code={\cv@setheadercontactsleading{#1}},% legacy alias
+  contactbaselineskip/.code={\setlength{\cv@headercontactsbaseline}{#1}\cv@headercontactsbaselinesettrue},% legacy alias
   headerlinespread/.code={\def\cv@headerlinespread{#1}},
   contactcolor/.code={\def\cv@contactcolor{#1}},
   namefont/.code={\def\cv@namefontcmd{#1}},
+  namesize/.code={\def\cv@namefontcmd{\fontsize{#1}{#1}\selectfont\bfseries}},
+  nameaftergap/.code={\setlength{\cv@nameaftergap}{#1}},
   taglinefont/.code={\def\cv@taglinefontcmd{#1}},
+  titlesize/.code={\def\cv@taglinefontcmd{\fontsize{#1}{#1}\selectfont\bfseries}},
+  titleaftergap/.code={\setlength{\cv@titleaftergap}{#1}},
   contactfont/.code={\def\cv@contactfontcmd{#1}},
   namecolor/.code={\def\cv@namecolor{#1}},
   taglinecolor/.code={\def\cv@taglinecolor{#1}},
@@ -138,6 +178,10 @@
   headerimagegap/.code={\setlength{\cv@headerimagepagegap}{#1}\setlength{\cv@headerimagetextgap}{#1}},
   headerimagepagegap/.code={\setlength{\cv@headerimagepagegap}{#1}},
   headerimagetextgap/.code={\setlength{\cv@headerimagetextgap}{#1}},
+  headertopgap/.code={\setlength{\cv@headertopgap}{#1}},
+  headerbottomgap/.code={\setlength{\cv@headerbottomgap}{#1}},
+  headerinfoaftergap/.code={\setlength{\cv@headerinfoaftergap}{#1}},
+  headertopoffset/.code={\setlength{\cv@headertopoffset}{#1}},
   headerlayout/.code={\def\cv@headerlayout{#1}},
   headerimageposition/.code={\def\cv@headerimageposition{#1}},
   font/.code={\def\cv@fontname{#1}\cv@applyfont},
@@ -244,13 +288,14 @@
   \endonecolentry
 }
 
-\newenvironment{header}{
-  \setlength{\topsep}{0pt}\par\kern\topsep
+\newenvironment{header}{%
+  \par
+  \vspace*{\dimexpr -\cv@headertopoffset + \cv@headertopgap\relax}% allow caller to lift header into the top margin
   \begingroup
   \linespread{\cv@headerlinespread}\selectfont
-}{
-  \par\kern\topsep
+}{%
   \endgroup
+  \par\vspace*{\cv@headerbottomgap}% configurable breathing room below header
 }
 
 % ==============================
@@ -266,8 +311,8 @@
 \sbox\ANDbox{}
 \newcommand{\AND}{\unskip\cleaders\copy\ANDbox\hskip\wd\ANDbox\ignorespaces}
 
-\newcommand{\cvcontactsep}{\cv@contactsep}
-\newcommand{\cvcontactbreak}{\cv@contactbreak}
+\DeclareRobustCommand{\cvcontactsep}{\cv@contactsep}
+\DeclareRobustCommand{\cvcontactbreak}{\cv@contactbreak}
 
 \NewDocumentCommand{\cvcontact}{m m o}{
   \mbox{\IfNoValueTF{#3}{%
@@ -285,11 +330,20 @@
 % Header rendering
 % ==============================
 \newcommand{\cv@renderTagline}{%
-  \ifdefempty{\cv@tagline}{}{
-    \par
-    \vspace{0.15 cm}%
-    {\cv@taglinefontcmd\color{\cv@taglinecolor}\cv@tagline}%
-  }%
+  {\cv@taglinefontcmd\color{\cv@taglinecolor}\cv@tagline}%
+}
+
+\newcommand{\cv@applyheadergap}[1]{%
+  \par
+  \setlength{\cv@headergaptemp}{#1}%
+  \addtolength{\cv@headergaptemp}{-\baselineskip}%
+  \vspace*{\cv@headergaptemp}%
+  \noindent
+}
+
+\newcommand{\cv@applyheadergapafter}[1]{%
+  \par
+  \vspace*{#1}%
 }
 
 \newcommand{\cv@headerimagebox}{%
@@ -322,11 +376,23 @@
 }
 
 \newcommand{\cv@renderheadercontent}{%
-  {\cv@namefontcmd\color{\cv@namecolor}\cv@name\par}%
-  \cv@renderTagline
-  \ifdefempty{\cv@contacts}{}{
-    \par
-    {\cv@contactfontcmd \cv@contacts}%
+  {\cv@namefontcmd\color{\cv@namecolor}\cv@name}%
+  \ifstrempty{\cv@tagline}{}{%
+    \cv@applyheadergap{\cv@nameaftergap}%
+    \cv@renderTagline
+  }%
+  \ifstrempty{\cv@contacts}{}{%
+    \ifstrempty{\cv@tagline}{\cv@applyheadergap{\cv@nameaftergap}}{\cv@applyheadergap{\cv@titleaftergap}}%
+    {\begingroup
+       \linespread{\cv@headercontactsleading}%
+       \cv@contactfontcmd
+       \selectfont
+       \ifcv@headercontactsbaselineset
+         \setlength{\baselineskip}{\cv@headercontactsbaseline}%
+       \fi
+       \cv@contacts
+     \endgroup}%
+    \cv@applyheadergapafter{\cv@headerinfoaftergap}%
   }%
 }
 
