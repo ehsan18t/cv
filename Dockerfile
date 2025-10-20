@@ -10,8 +10,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 COPY docker/apt-packages.txt /tmp/apt-packages.txt
 RUN apt-get update && \
     grep -vE '^\s*#' /tmp/apt-packages.txt | xargs -r apt-get install -y --no-install-recommends && \
+    apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/apt-packages.txt
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/* /tmp/apt-packages.txt && \
+    rm -rf /usr/share/doc/* /usr/share/man/* /usr/share/info/* && \
+    rm -rf /usr/share/texlive/texmf-dist/doc/* /usr/share/texlive/texmf-dist/source/*
 
 # Copy Calibri fonts from the repository into the container and refresh the font cache.
 COPY assets/fonts/ /usr/local/share/fonts/ehsancv/
