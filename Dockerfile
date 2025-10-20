@@ -1,22 +1,17 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:24.04
+FROM debian:bookworm-slim
 
 LABEL org.opencontainers.image.source="https://github.com/ehsan18t/cv" \
     org.opencontainers.image.description="TeX Live toolchain with Calibri fonts for building the CV"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install TeX Live full distribution, latexmk, and Inkscape for SVG conversion.
+# Install system and TeX Live packages defined in docker/apt-packages.txt
+COPY docker/apt-packages.txt /tmp/apt-packages.txt
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    texlive-full \
-    latexmk \
-    inkscape \
-    python3 \
-    make \
-    fontconfig && \
+    grep -vE '^\s*#' /tmp/apt-packages.txt | xargs -r apt-get install -y --no-install-recommends && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/apt-packages.txt
 
 # Copy Calibri fonts from the repository into the container and refresh the font cache.
 COPY assets/fonts/ /usr/local/share/fonts/ehsancv/

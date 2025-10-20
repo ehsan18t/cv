@@ -1,0 +1,23 @@
+# Base tooling
+ca-certificates
+curl
+fontconfig
+latexmk
+make
+python3
+inkscape
+
+# Core TeX Live components (LuaLaTeX + needed packages)
+texlive-base
+texlive-binaries
+texlive-luatex
+texlive-xetex
+texlive-plain-generic
+texlive-latex-base
+texlive-latex-recommended
+texlive-latex-extra
+texlive-pictures
+texlive-fonts-recommended
+texlive-fonts-extra
+texlive-bibtex-extra
+texlive-extra-utils
