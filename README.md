@@ -4,9 +4,10 @@ This repository now uses a reusable LuaLaTeX template so you can maintain severa
 
 ## Quick Start
 
-1. Ensure LuaLaTeX is installed (MiKTeX setup already works) and build with the provided VS Code tasks or Latex Workshop recipes.
-2. Open `cv-config.tex` and adjust `\cvsetup{...}` to update name, tagline, colours, PDF metadata, and contact details.
-3. Switch between content variants by changing the `\input{sections/...}` lines in `main.tex` (e.g. swap the `about` and `skills` files for backend or frontend versions).
+1. Install Docker and run `docker compose build` once to create the `ehsancv/latex:latest` image with LuaLaTeX, Inkscape (for SVG conversion), bundled Calibri fonts, and `latexmk`.
+2. Build every root-level CV variant with `docker compose run --rm cv-builder`. PDFs land in `pdf/` and the build directory is cleaned automatically.
+3. Open `cv-config.tex` and adjust `\cvsetup{...}` to update name, tagline, colours, PDF metadata, and contact details.
+4. Switch between content variants by changing the `\input{sections/...}` lines in any root `.tex` file (e.g. swap the `about` and `skills` files for backend or frontend versions).
 
 ## Customisation Points
 
@@ -52,28 +53,25 @@ Example: hide the footer, swap the base font, and tone down the section weight:
 
 See `styles/ehsancv.sty` for the authoritative defaults if you want to clone the structure into another project.
 
-## Creating Variants
-
-You can maintain multiple role-specific configs:
-
-```tex
-% cv-config-backend.tex
-\cvsetup{
-  name     = {Md. Ehsan Khan},
-  tagline  = {Backend Developer},
-  contacts = { ... }
-}
-```
-
-Then in `main.tex` swap which config file you `\input`. Everything else (layout, sections, and assets) remains reusable.
-
 ## Build Artifacts
 
 Compiled files are ignored via `.gitignore` (`out/`, `*.pdf`, etc.). Commit only the `.tex`, `.sty`, and asset sources.
 
+## Dockerised Workflow
+
+- The container entrypoint (`docker/entrypoint.sh`) scans the repository root for `*.tex` files and runs `latexmk` over each one unless you provide a specific list through `TARGET="frontend.tex backend.tex"`.
+- Override auxiliary paths via `OUTDIR` and `AUXDIR` environment variables (defaults are `pdf` and `build`). Temporary directories are removed after each run.
+- Fonts in `assets/fonts/Calibri` are baked into the image and registered with `fontconfig`/`luaotfload`, so the CV always renders with the intended family and weights.
+
+### VS Code integration
+
+- LaTeX Workshop is configured to execute all recipes inside the Docker image. Trigger `Build LaTeX project` and the active root `.tex` compiles in the container, keeping the workflow consistent across operating systems.
+- The default task `Docker latexmk (all root tex)` simply calls `docker compose run --rm cv-builder`, so you can rebuild every variant from the command palette without remembering the CLI.
+- Word counts (`LaTeX Workshop: Count words in LaTeX project`) also run inside the container via `texcount`, matching the fonts and macros available to the build.
+
 ## VS Code
 
-- The workspace already contains tasks for both direct `lualatex` and `latexmk` builds with `-shell-escape` enabled.
-- The `.vscode/settings.json` sets LuaLaTeX as the default recipe for LaTeX Workshop.
+- The workspace ships with LaTeX Workshop settings pointing at LuaLaTeX + `latexmk` recipes (Docker-backed) and disables the outline to reduce log noise.
+- If you prefer manual builds, run `docker compose run --rm cv-builder` directly or invoke the provided VS Code task.
 
 Happy typesetting!
