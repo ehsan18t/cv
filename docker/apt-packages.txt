@@ -7,7 +7,7 @@ make
 python3
 inkscape
 
-# Core TeX Live components (LuaLaTeX + needed packages)
+# Core TeX Live components
 texlive-base
 texlive-binaries
 texlive-luatex
