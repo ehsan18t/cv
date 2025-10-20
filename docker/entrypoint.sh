@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+cleanup() {
+  local aux_dir=${AUXDIR:-build}
+  rm -rf "${aux_dir}" 2>/dev/null || true
+  rm -rf svg-inkscape 2>/dev/null || true
+}
+
+run_external_command() {
+  "$@"
+  local status=$?
+  cleanup
+  exit "$status"
+}
+
 if [[ $# -gt 0 ]]; then
-  exec "$@"
+  run_external_command "$@"
 fi
 
 TARGET=${TARGET:-fullstack.tex}
@@ -14,7 +27,7 @@ mkdir -p "${OUTDIR}" "${AUXDIR}"
 
 IFS=' ' read -r -a extra_array <<< "${EXTRA_ARGS}"
 
-exec latexmk \
+latexmk \
   -synctex=0 \
   -interaction=nonstopmode \
   -file-line-error \
@@ -24,3 +37,8 @@ exec latexmk \
   -auxdir="${AUXDIR}" \
   "${extra_array[@]}" \
   "${TARGET}"
+status=$?
+
+cleanup
+
+exit "$status"
