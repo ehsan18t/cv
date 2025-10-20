@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 LABEL org.opencontainers.image.source="https://github.com/ehsan18t/cv" \
     org.opencontainers.image.description="TeX Live toolchain with Calibri fonts for building the CV"
