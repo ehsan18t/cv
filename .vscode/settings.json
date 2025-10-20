@@ -44,6 +44,17 @@
   "latex-workshop.docker.enabled": true,
   "latex-workshop.view.outline.enabled": false,
   "latex-workshop.docker.image.latex": "ehsancv/latex:latest",
+  "latex-workshop.texcount.path": "docker",
+  "latex-workshop.texcount.args": [
+    "run",
+    "--rm",
+    "-v",
+    "${workspaceFolder}:/work",
+    "-w",
+    "/work",
+    "ehsancv/latex:latest",
+    "texcount"
+  ],
   "latex-workshop.latex.outDir": "pdf",
   "latex-workshop.view.pdf.viewer": "tab",
   "latex-workshop.synctex.afterBuild.enabled": false,

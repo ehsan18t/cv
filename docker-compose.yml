@@ -8,7 +8,6 @@ services:
     volumes:
       - .:/work
     environment:
-      - TARGET=fullstack.tex
       - OUTDIR=pdf
       - AUXDIR=build
     command: []

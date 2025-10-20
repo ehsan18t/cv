@@ -2,26 +2,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Docker LuaLaTeX build (fullstack)",
+      "label": "Docker latexmk (all root tex)",
       "type": "process",
       "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-v",
-        "${workspaceFolder}:/work",
-        "-w",
-        "/work",
-        "ehsancv/latex:latest",
-        "lualatex",
-        "-synctex=0",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-shell-escape",
-        "-output-directory=pdf",
-        "-aux-directory=build",
-        "fullstack.tex"
-      ],
+      "args": ["compose", "run", "--rm", "cv-builder"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -29,111 +13,6 @@
         "kind": "build",
         "isDefault": true
       }
-    },
-    {
-      "label": "Docker latexmk LuaLaTeX build",
-      "type": "process",
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-v",
-        "${workspaceFolder}:/work",
-        "-w",
-        "/work",
-        "ehsancv/latex:latest",
-        "latexmk",
-        "-synctex=0",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-lualatex",
-        "-shell-escape",
-        "-outdir=pdf",
-        "-auxdir=build",
-        "fullstack.tex"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build"
-    },
-    {
-      "label": "Docker LuaLaTeX build (java-entry)",
-      "type": "process",
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-v",
-        "${workspaceFolder}:/work",
-        "-w",
-        "/work",
-        "ehsancv/latex:latest",
-        "lualatex",
-        "-synctex=0",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-shell-escape",
-        "-output-directory=pdf",
-        "-aux-directory=build",
-        "java-entry.tex"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build"
-    },
-    {
-      "label": "Docker LuaLaTeX build (backend)",
-      "type": "process",
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-v",
-        "${workspaceFolder}:/work",
-        "-w",
-        "/work",
-        "ehsancv/latex:latest",
-        "lualatex",
-        "-synctex=0",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-shell-escape",
-        "-output-directory=pdf",
-        "-aux-directory=build",
-        "backend.tex"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build"
-    },
-    {
-      "label": "Docker LuaLaTeX build (frontend)",
-      "type": "process",
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-v",
-        "${workspaceFolder}:/work",
-        "-w",
-        "/work",
-        "ehsancv/latex:latest",
-        "lualatex",
-        "-synctex=0",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-shell-escape",
-        "-output-directory=pdf",
-        "-aux-directory=build",
-        "frontend.tex"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build"
     }
   ]
 }
