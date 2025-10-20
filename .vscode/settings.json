@@ -39,8 +39,11 @@
       "tools": ["latexmk-lualatex"]
     }
   ],
-  "latex-workshop.latex.autoBuild.recipe": "LuaLaTeX",
-  "latex-workshop.latex.recipe.default": "LuaLaTeX",
+  "latex-workshop.latex.autoBuild.recipe": "Latexmk (LuaLaTeX)",
+  "latex-workshop.latex.recipe.default": "Latexmk (LuaLaTeX)",
+  "latex-workshop.docker.enabled": true,
+  "latex-workshop.view.outline.enabled": false,
+  "latex-workshop.docker.image.latex": "ehsancv/latex:latest",
   "latex-workshop.latex.outDir": "pdf",
   "latex-workshop.view.pdf.viewer": "tab",
   "latex-workshop.synctex.afterBuild.enabled": false,

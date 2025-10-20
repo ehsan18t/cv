@@ -1,0 +1,14 @@
+services:
+  cv-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ehsancv/latex:latest
+    working_dir: /work
+    volumes:
+      - .:/work
+    environment:
+      - TARGET=fullstack.tex
+      - OUTDIR=pdf
+      - AUXDIR=build
+    command: []
