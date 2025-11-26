@@ -23,7 +23,7 @@ out/
 _build/
 latex.out/
 build/
-svg-inkscape/
+# svg-inkscape/ - now stored in build/ folder
 
 # Editor / OS
 .DS_Store

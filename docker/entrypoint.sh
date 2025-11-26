@@ -15,7 +15,7 @@ run_external_command() {
 }
 
 if [[ $# -gt 0 ]]; then
-  run_external_command "$@"
+  exec "$@"
 fi
 
 OUTDIR=${OUTDIR:-pdf}
@@ -60,7 +60,5 @@ for target in "${targets[@]}"; do
     break
   fi
 done
-
-cleanup
 
 exit "$status"
