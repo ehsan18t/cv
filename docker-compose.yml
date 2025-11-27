@@ -7,7 +7,11 @@ services:
     working_dir: /work
     volumes:
       - .:/work
+      - luatex-cache:/var/lib/texmf # Persist LuaTeX font cache
     environment:
       - OUTDIR=pdf
       - AUXDIR=build
     command: []
+
+volumes:
+  luatex-cache:
