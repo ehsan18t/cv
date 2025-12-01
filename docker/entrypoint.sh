@@ -1,19 +1,6 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-cleanup() {
-  local aux_dir=${AUXDIR:-build}
-  rm -rf "${aux_dir}" 2>/dev/null || true
-  rm -rf svg-inkscape 2>/dev/null || true
-}
-
-run_external_command() {
-  "$@"
-  local status=$?
-  cleanup
-  exit "$status"
-}
-
 if [[ $# -gt 0 ]]; then
   exec "$@"
 fi
