@@ -60,5 +60,6 @@
   "latex-workshop.synctex.afterBuild.enabled": false,
   "latex-workshop.message.error.show": true,
   "latex-workshop.message.warning.show": false,
-  "latex-workshop.intellisense.package.enabled": true
+  "latex-workshop.intellisense.package.enabled": true,
+  "cSpell.words": ["Dockerized", "Pino", "Valkey", "Vitest"]
 }
