@@ -1,23 +1,10 @@
-# Base tooling
+# Runtime OS packages for the final image.
+# TeX Live itself is installed from CTAN in the builder stage, not from apt.
+
 ca-certificates
 curl
 fontconfig
-latexmk
-make
-python3
-inkscape
+perl
 
-# Core TeX Live components
-texlive-base
-texlive-binaries
-texlive-luatex
-texlive-xetex
-texlive-plain-generic
-texlive-latex-base
-texlive-latex-recommended
-texlive-latex-extra
-texlive-pictures
-texlive-fonts-recommended
-texlive-fonts-extra
-texlive-bibtex-extra
-texlive-extra-utils
+# Required by the `svg` package to rasterise assets/*.svg at build time.
+inkscape

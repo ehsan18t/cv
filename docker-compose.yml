@@ -7,11 +7,32 @@ services:
     working_dir: /work
     volumes:
       - .:/work
-      - luatex-cache:/var/lib/texmf # Persist LuaTeX font cache
     environment:
-      - OUTDIR=pdf
-      - AUXDIR=build
+      OUTDIR: pdf
+      AUXDIR: build
+      # Build a subset with: docker compose run --rm -e TARGET="Ehsan_Khan__Frontend.tex" cv-builder
+      TARGET: ${TARGET:-}
+      EXTRA_ARGS: ${EXTRA_ARGS:-}
     command: []
 
-volumes:
-  luatex-cache:
+  # Continuous rebuild on save: docker compose run --rm cv-watch
+  cv-watch:
+    image: ehsancv/latex:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /work
+    volumes:
+      - .:/work
+    command:
+      - latexmk
+      - -lualatex
+      - -shell-escape
+      - -interaction=nonstopmode
+      - -file-line-error
+      - -synctex=0
+      - -outdir=pdf
+      - -auxdir=build
+      - -pvc
+      - -view=none
+      - Ehsan_Khan__FullStack.tex

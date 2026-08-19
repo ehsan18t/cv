@@ -43,7 +43,7 @@ for target in "${targets[@]}"; do
     -auxdir="${AUXDIR}" \
     "${extra_array[@]}" \
     "${target}"; then
-    status=$?
+    status=1
     break
   fi
 done

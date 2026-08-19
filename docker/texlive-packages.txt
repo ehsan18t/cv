@@ -1,0 +1,48 @@
+# CTAN packages installed on top of scheme-basic via tlmgr.
+# Dependencies are resolved automatically, so only direct requirements are listed.
+# Keep this in sync with the \RequirePackage list in styles/ehsancv.sty.
+
+# Build driver
+latexmk
+
+# Word counts (used by the LaTeX Workshop texcount task)
+texcount
+
+# Font handling (LuaLaTeX + bundled Calibri)
+fontspec
+luaotfload
+lualibs
+microtype
+
+# Page geometry and layout
+geometry
+titlesec
+fancyhdr
+lastpage
+changepage
+paracol
+needspace
+enumitem
+
+# Colour, graphics and vector icons
+xcolor
+transparent
+svg
+koma-script
+catchfile
+pgf
+
+# Icon font
+fontawesome5
+
+# Links and PDF metadata
+hyperref
+bookmark
+
+# LuaTeX support layer (transparent, svg)
+luatexbase
+
+# Programming layer
+etoolbox
+iftex
+pdftexcmds
