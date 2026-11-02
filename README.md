@@ -1,4 +1,4 @@
-# ehsancv
+# clearcv
 
 A single-column CV class for LuaLaTeX. It reads well for people and extracts in clean reading order for applicant tracking systems (ATS). Compiling needs no shell escape and no external tools.
 
@@ -16,7 +16,7 @@ A single-column CV class for LuaLaTeX. It reads well for people and extracts in 
 
 | Path | Contents |
 | --- | --- |
-| `theme/` | The class: `ehsancv.cls`, `ehsancv.lua`, `ehsancv-icons.def` |
+| `theme/` | The class: `clearcv.cls`, `clearcv.lua`, `clearcv-icons.def` |
 | `example.tex` | A complete starter CV |
 | `cvs/` | The author's CVs, with their `sections/` and `assets/`, as a larger example |
 | `latexmkrc` | Adds `theme/` and `cvs/` to the TeX search path for `latexmk` |
@@ -67,7 +67,7 @@ Copy the three files from `theme/` next to your document, with the `.tex` file a
 A complete document:
 
 ```latex
-\documentclass[paper=a4, accent=blue]{ehsancv}
+\documentclass[paper=a4, accent=blue]{clearcv}
 
 \cvname{Jane Doe}
 \cvsubtitle{Software Engineer}
@@ -143,7 +143,7 @@ The first two bullets of an entry stay on the same page as its heading, and a se
 
 ## Options
 
-Set options in `\documentclass[...]{ehsancv}` or with `\cvsetup{...}` in the preamble. Order does not matter, and an unknown key stops the build with an error.
+Set options in `\documentclass[...]{clearcv}` or with `\cvsetup{...}` in the preamble. Order does not matter, and an unknown key stops the build with an error.
 
 ### Page and type
 
@@ -223,7 +223,7 @@ Set options in `\documentclass[...]{ehsancv}` or with `\cvsetup{...}` in the pre
 Tag content with `only` and pick a `variant`. Untagged content always prints, and with no `variant` everything prints.
 
 ```latex
-\documentclass[variant=backend]{ehsancv}
+\documentclass[variant=backend]{clearcv}
 
 \begin{document}
 \section{Experience}
@@ -298,7 +298,7 @@ To add one, give `\cvdeficon` a name, the size of its drawing area and its outli
 \cvcontact{square}{Example}[https://example.com]
 ```
 
-`theme/ehsancv-icons.def` holds the built-in outlines, converted from SVG.
+`theme/clearcv-icons.def` holds the built-in outlines, converted from SVG.
 
 ### Fitting the page
 
@@ -308,8 +308,8 @@ To add one, give `\cvdeficon` a name, the size of its drawing area and its outli
 
 | Message | Cause and fix |
 | --- | --- |
-| ``File `ehsancv.cls' not found`` | The class is not on the search path. Run `latexmk` from the repository root, or copy the three theme files next to your document. |
-| `ehsancv requires LuaLaTeX` | The document was compiled with another engine. Use `latexmk -lualatex`, or set the compiler to LuaLaTeX. |
+| ``File `clearcv.cls' not found`` | The class is not on the search path. Run `latexmk` from the repository root, or copy the three theme files next to your document. |
+| `clearcv requires LuaLaTeX` | The document was compiled with another engine. Use `latexmk -lualatex`, or set the compiler to LuaLaTeX. |
 | `Unknown option 'x'` | A misspelt key in `\documentclass`, `\cvsetup`, `cventry` or the optional argument of `\cvitem`. Check the lists above. |
 | `accent 'x' is neither a preset nor six hex digits` | Use a preset name, or a hex colour without `#`. |
 | `accent x has 1.1:1 contrast on white` | A warning: the colour is hard to read on white. Pick a darker one. |

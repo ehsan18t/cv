@@ -1,6 +1,6 @@
 # CTAN packages installed on top of scheme-basic via tlmgr.
 # Dependencies are resolved automatically, so only direct requirements are listed.
-# Keep this in sync with the \RequirePackage list in ehsancv.cls.
+# Keep this in sync with the \RequirePackage list in clearcv.cls.
 
 # Build driver
 latexmk

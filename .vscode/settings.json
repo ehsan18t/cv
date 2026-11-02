@@ -26,7 +26,7 @@
   "latex-workshop.latex.recipe.default": "Latexmk (LuaLaTeX)",
   "latex-workshop.docker.enabled": true,
   "latex-workshop.view.outline.enabled": false,
-  "latex-workshop.docker.image.latex": "ehsancv/latex:latest",
+  "latex-workshop.docker.image.latex": "clearcv/latex:latest",
   "latex-workshop.texcount.path": "docker",
   "latex-workshop.texcount.args": [
     "run",
@@ -35,7 +35,7 @@
     "${workspaceFolder}:/work",
     "-w",
     "/work",
-    "ehsancv/latex:latest",
+    "clearcv/latex:latest",
     "texcount"
   ],
   "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/pdf",
