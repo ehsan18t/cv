@@ -3,15 +3,14 @@
   "latex-workshop.latex.tools": [
     {
       "name": "latexmk-lualatex",
-      "command": "latexmk",
+      "command": "docker",
       "args": [
-        "-synctex=0",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "-lualatex",
-        "-auxdir=build",
-        "-outdir=%OUTDIR%",
-        "%DOCFILE%"
+        "compose",
+        "run",
+        "--rm",
+        "-e",
+        "TARGET=%RELATIVE_DOC%.tex",
+        "cv-builder"
       ]
     }
   ],
@@ -39,7 +38,7 @@
     "ehsancv/latex:latest",
     "texcount"
   ],
-  "latex-workshop.latex.outDir": "pdf",
+  "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/pdf",
   "latex-workshop.view.pdf.viewer": "tab",
   "latex-workshop.synctex.afterBuild.enabled": false,
   "latex-workshop.message.error.show": true,

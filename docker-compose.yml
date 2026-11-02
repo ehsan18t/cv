@@ -10,7 +10,7 @@ services:
     environment:
       OUTDIR: pdf
       AUXDIR: build
-      # Build a subset with: docker compose run --rm -e TARGET="Ehsan_Khan__Frontend.tex" cv-builder
+      # Build a subset with: docker compose run --rm -e TARGET="cvs/Ehsan_Khan__Frontend.tex" cv-builder
       TARGET: ${TARGET:-}
       EXTRA_ARGS: ${EXTRA_ARGS:-}
     command: []
@@ -34,4 +34,4 @@ services:
       - -auxdir=build
       - -pvc
       - -view=none
-      - Ehsan_Khan__FullStack.tex
+      - cvs/Ehsan_Khan__FullStack.tex

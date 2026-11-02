@@ -19,14 +19,16 @@ declare -a targets=()
 if [[ -n "${TARGETS}" ]]; then
   read -r -a targets <<< "${TARGETS}"
 else
+  search_dirs=(.)
+  [[ -d cvs ]] && search_dirs+=(cvs)
   while IFS= read -r -d '' file; do
     file=${file#./}
     targets+=("${file}")
-  done < <(find . -maxdepth 1 -type f -name '*.tex' -print0)
+  done < <(find "${search_dirs[@]}" -maxdepth 1 -type f -name '*.tex' -print0)
 fi
 
 if [[ ${#targets[@]} -eq 0 ]]; then
-  echo "entrypoint: no root-level .tex files found; nothing to build."
+  echo "entrypoint: no .tex files found in the root or cvs/; nothing to build."
   exit 0
 fi
 

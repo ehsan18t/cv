@@ -1,1 +1,1 @@
-ensure_path('TEXINPUTS', './theme//');
+ensure_path('TEXINPUTS', './theme//', './cvs//');
