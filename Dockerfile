@@ -5,7 +5,7 @@
 #
 # Debian's texlive-*-extra metapackages pull in several gigabytes to provide a
 # handful of CTAN packages, so the toolchain is installed from upstream instead
-# and trimmed to exactly what clearcv.cls requires.
+# and trimmed to exactly what simplycv.cls requires.
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim AS texlive
 
@@ -77,10 +77,10 @@ COPY --from=texlive /usr/local/texlive /usr/local/texlive
 RUN luaotfload-tool --update
 
 # Provide an entrypoint script that wraps latexmk with the required defaults.
-COPY docker/entrypoint.sh /usr/local/bin/clearcv-latex
-RUN chmod +x /usr/local/bin/clearcv-latex
+COPY docker/entrypoint.sh /usr/local/bin/simplycv-latex
+RUN chmod +x /usr/local/bin/simplycv-latex
 
 WORKDIR /work
 
-ENTRYPOINT ["/usr/local/bin/clearcv-latex"]
+ENTRYPOINT ["/usr/local/bin/simplycv-latex"]
 CMD []

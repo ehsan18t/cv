@@ -26,7 +26,7 @@
   "latex-workshop.latex.recipe.default": "Latexmk (LuaLaTeX)",
   "latex-workshop.docker.enabled": true,
   "latex-workshop.view.outline.enabled": false,
-  "latex-workshop.docker.image.latex": "ghcr.io/ehsan18t/clearcv-latex:latest",
+  "latex-workshop.docker.image.latex": "ghcr.io/ehsan18t/simplycv-latex:latest",
   "latex-workshop.texcount.path": "docker",
   "latex-workshop.texcount.args": [
     "run",
@@ -36,7 +36,7 @@
     "${workspaceFolder}:/work",
     "-w",
     "/work",
-    "ghcr.io/ehsan18t/clearcv-latex:latest",
+    "ghcr.io/ehsan18t/simplycv-latex:latest",
     "texcount"
   ],
   "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/pdf",
