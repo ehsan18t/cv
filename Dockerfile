@@ -5,7 +5,7 @@
 #
 # Debian's texlive-*-extra metapackages pull in several gigabytes to provide a
 # handful of CTAN packages, so the toolchain is installed from upstream instead
-# and trimmed to exactly what styles/ehsancv.sty requires.
+# and trimmed to exactly what ehsancv.cls requires.
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim AS texlive
 
@@ -59,7 +59,7 @@ RUN set -eux; \
 FROM debian:trixie-slim
 
 LABEL org.opencontainers.image.source="https://github.com/ehsan18t/cv" \
-    org.opencontainers.image.description="Minimal TeX Live toolchain with Calibri fonts for building the CV"
+    org.opencontainers.image.description="Minimal TeX Live toolchain for building the CV"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PATH="/usr/local/texlive/bin/x86_64-linux:${PATH}"
@@ -73,15 +73,8 @@ RUN apt-get update && \
 
 COPY --from=texlive /usr/local/texlive /usr/local/texlive
 
-# Copy Calibri from the repository, then warm the luaotfload cache so the first
-# real build does not pay for a full font scan.
-COPY assets/fonts/ /usr/local/share/fonts/ehsancv/
-
-RUN set -eux; \
-    find /usr/local/share/fonts/ehsancv -type d -exec chmod 755 {} +; \
-    find /usr/local/share/fonts/ehsancv -type f -exec chmod 644 {} +; \
-    fc-cache -f; \
-    luaotfload-tool --update
+# Warm the luaotfload cache so the first real build does not pay for a full font scan.
+RUN luaotfload-tool --update
 
 # Provide an entrypoint script that wraps latexmk with the required defaults.
 COPY docker/entrypoint.sh /usr/local/bin/ehsancv-latex

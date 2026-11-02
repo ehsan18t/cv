@@ -1,125 +1,121 @@
-# CV Template
+# ehsancv
 
-This repository now uses a reusable LuaLaTeX template so you can maintain several CV variants (backend, frontend, full-stack, etc.) without rewriting the layout each time.
+A single-column CV class for LuaLaTeX. It reads well for people and extracts in clean reading order for applicant tracking systems (ATS). Compiling needs no shell escape and no external tools.
 
-## Quick Start
+## Quick start
 
-1. Install Docker and run `docker compose build` once to create the `ehsancv/latex:latest` image with LuaLaTeX, Inkscape (for SVG conversion), bundled Calibri fonts, and `latexmk`.
-2. Build every root-level CV variant with `docker compose run --rm cv-builder`. PDFs land in `pdf/` and the build directory is cleaned automatically.
+Copy `ehsancv.cls`, `ehsancv.lua` and `ehsancv-icons.def` next to your document, then compile with LuaLaTeX (TeX Live 2023 or newer). `example.tex` is a complete starting point.
 
-> You can skip step 1. The `cv-builder` service builds its own image on first use, so `docker compose run --rm cv-builder` works from a fresh clone.
+```latex
+\documentclass[paper=a4, accent=blue]{ehsancv}
 
-3. Open `cv-config.tex` and adjust `\cvsetup{...}` to update name, tagline, colours, PDF metadata, and contact details.
-4. Switch between content variants by changing the `\input{sections/...}` lines in any root `.tex` file (e.g. swap the `about` and `skills` files for backend or frontend versions).
+\cvname{Jane Doe}
+\cvsubtitle{Software Engineer}
+\cvemail{jane@example.com}
+\cvgithub{janedoe}
 
-## Customisation Points
+\begin{document}
+\makecvheader
 
-### `\cvsetup` quick reference
-
-The template exposes a pgfkeys interface so you can keep layout logic in `styles/ehsancv.sty` while describing your personal flavour in `cv-config.tex`. You can combine any of the keys below inside a single `\cvsetup{...}` call.
-
-| Area            | Keys                                                                                                                                                                                                                                                                                                                                                                                              | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Identity        | `name`, `tagline`                                                                                                                                                                                                                                                                                                                                                                                 | Strings appear in the header. Leave `tagline` empty to drop the line.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Colours         | `primarycolor`, `linkcolor`, `contactcolor`, `taglinecolor`, `namecolor`, `footercolor`                                                                                                                                                                                                                                                                                                           | Supply comma-separated RGB values (`{0,79,144}`) or an existing colour name (`{primaryColor}`). `primarycolor` also drives link colours unless you override `linkcolor`/`urlcolor`.                                                                                                                                                                                                                                                                                                                                                                |
-| Typography      | `font`, `fontoptions`, `namefont`, `taglinefont`, `contactfont`, `headerlinespread`, `bodylinespread`                                                                                                                                                                                                                                                                                             | `font` targets both main and sans families (use your system font name). Pair it with `fontoptions` for `\setmainfont` / `\setsansfont` options (e.g. `Path = ./assets/fonts/`).                                                                                                                                                                                                                                                                                                                                                                    |
-| Header          | `contacts`, `contactsep`, `contactbreak`, `headercontactslinegap`, `headercontactsleading`, `headercontactsbaseline`, `headerlayout`, `headerimage`, `headerimagesize`, `headerimagegap`, `headerimagepagegap`, `headerimagetextgap`, `namesize`, `nameaftergap`, `titlesize`, `titleaftergap`, `headerinfoaftergap`, `headertopgap`, `headerbottomgap`, `headertopoffset`, `headerimageposition` | Use `\cvcontact{icon}{text}[link]` per item. `namesize`/`titlesize` adjust the font sizes without redefining macros, while the gap keys set the total vertical distance between header elements (no hidden padding). Set `headerlayout = {left}` to align text left; `headerimageposition = {page}` pins the optional circular image to the top-right edge. `headerimagegap` updates both dedicated image gap knobs at once. Legacy keys `contactlinegap`, `contactlinespread`, and `contactbaselineskip` still work but forward to the new names. |
-| Lists & spacing | `itemgap`                                                                                                                                                                                                                                                                                                                                                                                         | Controls vertical space (`itemsep`) between list entries in the provided highlight environments.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Footer          | `showfooter`, `showupdated`, `showpage`, `footer-left`, `footer-right`, `footerfont`, `pageformat`, `updatedlabel`, `lastupdated`                                                                                                                                                                                                                                                                 | Set boolean flags to `true`/`false`. `footer-left` and `footer-right` accept arbitrary LaTeX (defaults render last-updated + page count).                                                                                                                                                                                                                                                                                                                                                                                                          |
-| PDF metadata    | `pdftitle`, `pdfauthor`, `pdfsubject`, `pdfkeywords`                                                                                                                                                                                                                                                                                                                                              | Passed through to `hyperref`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Section styling | `sectionformat`, `sectionpost`, `sectionleft`, `sectionbefore`, `sectionafter`                                                                                                                                                                                                                                                                                                                    | Provide the desired formatting tokens; the defaults already include `\needspace` and `\titlerule`.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-
-Example: hide the footer, swap the base font, and tone down the section weight:
-
-```tex
-\cvsetup{
-  font          = {Inter},
-  fontoptions   = {Path = ./assets/fonts/},
-  showfooter    = {false},
-  sectionformat = {\Large\bfseries\color{black}},
-  sectionpost   = {},
-  sectionafter  = {0.4 cm}
-}
+\section{Experience}
+\begin{cventry}[title = {Software Engineer}, org = {Example GmbH}, from = {2022-03}, to = {present}]
+  \cvitem{Reduced average API response time by \textbf{40\%}.}
+\end{cventry}
+\end{document}
 ```
 
-### Runtime helpers
+On Overleaf, set the compiler to LuaLaTeX in the project menu.
 
-- `\cvrefreshstyle` re-applies the current section styling. Call it immediately after a second `\cvsetup{...}` block inside the document body if you change section keys mid-stream.
-- `\cvsetgeometry{...}` lets you override the page geometry later (useful for alternate one-page vs multi-page variants).
-- `\cvsvgicon{name}{path}{height}` defines reusable SVG icons. After calling it in your config you can use `\name` inside contacts or elsewhere.
-- `headerimage`, `headerimagesize`, `headerimagegap`, `headerimagepagegap`, `headerimagetextgap`, `namesize`, `nameaftergap`, `titlesize`, `titleaftergap`, `headerinfoaftergap`, `headercontactslinegap`, `headercontactsleading`, `headercontactsbaseline`, `headertopgap`, `headerbottomgap`, `headertopoffset`, `headerlayout`, and `headerimageposition` let you dial in both imagery and typography. `headerimagepagegap` nudges the image in from the page edge, `headerimagetextgap` trims space from the text column, the size keys rescale the name/tagline, and the gap keys now set the absolute spacing between stacked header blocks. Use `headertopoffset` to pull the header upward into the page margin when you need a tighter top edge. Switch `headerimageposition` to `flow` if you prefer it inline with the name.
+## Options
 
-### Layout and content building blocks
+Set options in `\documentclass[...]{ehsancv}` or with `\cvsetup{...}` in the preamble. Order does not matter, and an unknown key stops the build with an error.
 
-- `\makecvheader` prints the header with the configured name, tagline, and contacts.
-- Environments `highlights`, `highlightsforbulletentries`, `onecolentry`, and `twocolentry` keep experience/projects aligned. Wrap bullet lists in the highlights environments for consistent spacing.
+| Key | Values (default first) | Effect |
+| --- | --- | --- |
+| `paper` | `a4`, `letter` | Page size |
+| `accent` | `blue`, `teal`, `green`, `red`, `purple`, `orange`, `slate`, `black`, or six hex digits | Accent colour; warns below 4.5:1 contrast on white |
+| `font` | `Carlito`, or any font name | Main font |
+| `fontpath`, `fontoptions` | empty | fontspec `Path` and extra options for a custom `font` |
+| `fontsize`, `leading` | `10.5pt`, `1.3` | Body size and line height factor |
+| `marginx`, `marginy` | `43.5pt`, `37.5pt` | Page margins |
+| `density` | `normal`, `compact`, `relaxed` | Scales the gaps below |
+| `sectiongap`, `entrygap`, `itemgap` | `10.5pt`, `4.5pt`, `0.75pt` | Individual gaps |
+| `subtitle` | `true`, `false` | Shows or hides `\cvsubtitle`; hiding leaves no gap |
+| `photo` | `true`, `false` | Shows or hides `\cvphoto` |
+| `photosize`, `photoshape`, `photofocus` | `auto` or a length, `circle` or `square`, `0.3` | Photo size, shape and vertical crop position (0 top, 1 bottom); `auto` matches the name and contact block, up to `69pt` |
+| `photoborder`, `photobordercolor` | `1.8pt` (`0pt` for none), a lighter accent, six hex digits or an xcolor colour | Photo border, drawn inside `photosize` |
+| `icons`, `linkicons` | `true`, `false` | Contact icons and the icon after `\cvlink` |
+| `contactstyle` | `grid`, `inline` | Aligned columns or wrapped text; a grid too wide for the header wraps automatically |
+| `contactcolumns` | `4` | Columns in the grid |
+| `dateformat` | `short`, `long`, `numeric` | `Nov 2025`, `November 2025` or `11/2025` |
+| `presentlabel` | `Present` | Text for `to = {present}` |
+| `variant` | empty | Selects tagged content; see below |
+| `ats` | `false`, `true` | Removes photo, icons and colour, and prints full URLs |
+| `maxpages` | `0` (off) | Warns when the CV runs longer |
+| `pagenumbers` | `false`, `true` | `Page 1 of 2` in the footer |
+| `lastupdated` | empty | Text on the left of the footer |
+| `pdftitle`, `pdfkeywords`, `lang` | `<name> CV`, empty, `en-US` | PDF metadata |
 
-See `styles/ehsancv.sty` for the authoritative defaults if you want to clone the structure into another project.
+## Commands
 
-## Build Artifacts
-
-Compiled files are ignored via `.gitignore` (`out/`, `*.pdf`, etc.). Commit only the `.tex`, `.sty`, and asset sources.
-
-## Dockerised Workflow
-
-Everything runs through Docker Compose, so the only prerequisite is Docker itself. No LaTeX distribution is installed on your machine.
-
-### Command reference
-
-| What you want | Command |
+| Command | Purpose |
 | --- | --- |
-| Build every root-level `.tex` into `pdf/` | `docker compose run --rm cv-builder` |
-| Build one variant | `docker compose run --rm -e TARGET="Ehsan_Khan__Frontend.tex" cv-builder` |
-| Build a subset | `docker compose run --rm -e TARGET="Ehsan_Khan__Frontend.tex Ehsan_Khan__Backend.tex" cv-builder` |
-| Rebuild continuously as you save | `docker compose run --rm cv-watch` |
-| Delete auxiliary files and PDFs | `docker compose run --rm -e EXTRA_ARGS="-C" cv-builder` |
+| `\cvname{}`, `\cvsubtitle{}`, `\cvphoto{file}` | Header content |
+| `\cvlocation{}`, `\cvemail{}`, `\cvphone{}`, `\cvwebsite{example.com}` | Contact details |
+| `\cvlinkedin{user}`, `\cvgithub{user}`, `\cvgitlab{user}`, `\cvorcid{id}`, `\cvcodeforces{user}`, `\cvleetcode{user}`, `\cvstackoverflow{id}{name}` | Profiles |
+| `\cvcontact{icon}{text}[url]` | Any other contact item; `icon` may be empty |
+| `\cvdeficon{name}{width}{height}{PDF path}` | Adds an icon; see `ehsancv-icons.def` for the format |
+| `\makecvheader` | Prints the header |
+| `\section[only={...}]{Title}` | Section heading; a heading always stays with what follows |
+| `\begin{cventry}[keys] ... \end{cventry}` | An experience, project or education entry |
+| `\cvitem[only={...}]{text}`, `\cvsubitem[only={...}]{text}` | Bullets |
+| `\cvskill{Label}{items}` | A `Label: items` line |
+| `\cvnote{text}` | A short paragraph set apart from the entry above |
+| `\cvlink{url}{label}` | A labelled link, in italics, with an icon |
+| `\cvonly{a,b}{content}` | Content for certain variants |
 
-Run these from the repository root. Every command uses `--rm`, so no containers are left behind.
+`cventry` keys: `title`, `org`, `location`, `type`, `from`, `to`, `date`, `right`, `detail`, `detailright`, `only`.
 
-### Maintaining the image
+- `from` and `to` take `YYYY-MM`, a plain year, or `present`, and are formatted by `dateformat`. `date` takes free text instead.
+- `right` replaces the date with anything else, such as a link.
+- `detail` and `detailright` fill the grey second line when `location` and `type` do not apply.
+- The first two bullets of an entry stay on the same page as its heading.
 
-| When | Command |
-| --- | --- |
-| First run, or after editing `Dockerfile`, `docker/apt-packages.txt`, `docker/texlive-packages.txt`, or `assets/fonts/` | `docker compose build` |
-| The image is in a bad state and you want it rebuilt from scratch | `docker compose build --no-cache` |
-| Free the disk space the image occupies | `docker image rm ehsancv/latex:latest` |
+## One source, several CVs
 
-Day-to-day editing of `.tex`, `.sty`, and `sections/` files needs no rebuild. The repository is bind-mounted into the container at `/work`, so the running image always sees your latest sources.
+Tag content with `only` and pick a `variant`. Untagged content always prints, and with no `variant` everything prints.
 
-### Running an arbitrary command in the container
-
-The entrypoint executes any arguments you pass instead of its default build loop, which is useful for one-off tooling:
-
-```sh
-docker compose run --rm cv-builder texcount Ehsan_Khan__FullStack.tex
-docker compose run --rm cv-builder kpsewhich paracol.sty
-docker compose run --rm cv-builder bash
+```latex
+\documentclass[variant=backend]{ehsancv}
+...
+\begin{cventry}[title = {Developer}, org = {Example GmbH}, only = {backend,fullstack}]
+  \cvitem{Shown for backend and fullstack.}
+  \cvitem[only = backend]{Shown for backend only.}
+\end{cventry}
 ```
 
-### How it works
+`\section[only=...]` filters the heading only. Wrap the section's body in `\cvonly` to filter that too.
 
-- The container entrypoint (`docker/entrypoint.sh`) scans the repository root for `*.tex` files and runs `latexmk` over each one unless you provide a specific list through `TARGET="frontend.tex backend.tex"`.
-- Override auxiliary paths via `OUTDIR` and `AUXDIR` environment variables (defaults are `pdf` and `build`). Temporary directories are removed after each run.
-- `EXTRA_ARGS` is forwarded verbatim to `latexmk`, so any flag that tool accepts can be passed through.
-- Fonts in `assets/fonts/Calibri` are baked into the image and registered with `fontconfig`/`luaotfload`, so the CV always renders with the intended family and weights.
+## Tagged PDF
 
-### Image contents
+Put this before `\documentclass` to produce a tagged PDF for screen readers:
 
-The image is built in two stages to keep it small: roughly 890 MB, down from 4.3 GB. Rather than installing Debian's `texlive-*-extra` metapackages, which ship thousands of CTAN packages to deliver the couple of dozen this template needs, TeX Live is installed from CTAN with `scheme-basic` plus an explicit package list.
+```latex
+\DocumentMetadata{lang=en-US, pdfversion=2.0, tagging=on}
+```
 
-- `docker/texlive-packages.txt` lists the CTAN packages. **If you add a `\RequirePackage` to `styles/ehsancv.sty`, add it here too and run `docker compose build`**, otherwise the build will fail with a missing `.sty` file. To find the right name before committing to a rebuild, experiment inside the container with `docker compose run --rm cv-builder tlmgr install <package>`.
-- `docker/apt-packages.txt` lists the operating system packages in the final image (`fontconfig`, `perl` for `latexmk`, `curl` so `tlmgr` can fetch packages, and `inkscape` for the `svg` package).
-- Documentation and sources are excluded from the TeX Live install, and the `luaotfload` font cache is warmed at build time so the first compile is not slower than the rest.
+## Building with Docker
 
-### VS Code integration
+The image holds a minimal TeX Live, so nothing else needs installing. `docker compose build` builds it once.
 
-- LaTeX Workshop is configured to execute all recipes inside the Docker image. Trigger `Build LaTeX project` and the active root `.tex` compiles in the container, keeping the workflow consistent across operating systems.
-- The default task `Docker latexmk (all root tex)` simply calls `docker compose run --rm cv-builder`, so you can rebuild every variant from the command palette without remembering the CLI.
-- Word counts (`LaTeX Workshop: Count words in LaTeX project`) also run inside the container via `texcount`, matching the fonts and macros available to the build.
+| Command | Result |
+| --- | --- |
+| `docker compose run --rm cv-builder` | Builds every `.tex` file in the root into `pdf/` |
+| `docker compose run --rm -e TARGET=example.tex cv-builder` | Builds one file |
+| `docker compose run --rm cv-watch` | Rebuilds on save |
 
-## VS Code
+Auxiliary files go to `build/`. The VS Code settings in `.vscode/` use the same image through LaTeX Workshop.
 
-- The workspace ships with LaTeX Workshop settings pointing at LuaLaTeX + `latexmk` recipes (Docker-backed) and disables the outline to reduce log noise.
-- If you prefer manual builds, run `docker compose run --rm cv-builder` directly or invoke the provided VS Code task.
+## Credits
 
-Happy typesetting!
+Icons: [Font Awesome Free 5.15.4](https://fontawesome.com/license/free) (CC BY 4.0) and [Simple Icons](https://simpleicons.org) (CC0). Default font: [Carlito](https://ctan.org/pkg/carlito) (SIL OFL).

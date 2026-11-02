@@ -27,7 +27,6 @@ services:
     command:
       - latexmk
       - -lualatex
-      - -shell-escape
       - -interaction=nonstopmode
       - -file-line-error
       - -synctex=0

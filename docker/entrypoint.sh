@@ -38,7 +38,6 @@ for target in "${targets[@]}"; do
     -interaction=nonstopmode \
     -file-line-error \
     -lualatex \
-    -shell-escape \
     -outdir="${OUTDIR}" \
     -auxdir="${AUXDIR}" \
     "${extra_array[@]}" \

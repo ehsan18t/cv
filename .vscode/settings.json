@@ -8,7 +8,7 @@
         "-synctex=0",
         "-interaction=nonstopmode",
         "-file-line-error",
-        "-shell-escape",
+        
         "-aux-directory=build",
         "-output-directory=%OUTDIR%",
         "%DOCFILE%"
@@ -22,7 +22,7 @@
         "-interaction=nonstopmode",
         "-file-line-error",
         "-lualatex",
-        "-shell-escape",
+        
         "-auxdir=build",
         "-outdir=%OUTDIR%",
         "%DOCFILE%"
