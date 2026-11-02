@@ -17,7 +17,6 @@ A single-column CV class for LuaLaTeX. It reads well for people and extracts in 
 | Path | Contents |
 | --- | --- |
 | `theme/` | The class: `clearcv.cls`, `clearcv.lua`, `clearcv-icons.def` |
-| `example.tex` | A complete starter CV |
 | `cvs/` | The author's CVs, with their `sections/` and `assets/`, as a larger example |
 | `latexmkrc` | Adds `theme/` and `cvs/` to the TeX search path for `latexmk` |
 | `Dockerfile`, `docker/`, `docker-compose.yml` | A minimal TeX Live image |
@@ -25,21 +24,21 @@ A single-column CV class for LuaLaTeX. It reads well for people and extracts in 
 
 ## Getting started
 
-Pick one of the three routes. All of them start from `example.tex`, or from the [minimal document](#writing-your-cv) below.
+Save the [complete document](#writing-your-cv) below as `my-cv.tex` in the repository root, then pick a route.
 
 ### Docker (nothing else to install)
 
 ```sh
 docker compose build
-docker compose run --rm -e TARGET=example.tex cv-builder
+docker compose run --rm -e TARGET=my-cv.tex cv-builder
 ```
 
-The PDF is written to `pdf/example.pdf`.
+The PDF is written to `pdf/my-cv.pdf`.
 
 | Command | Result |
 | --- | --- |
 | `docker compose run --rm cv-builder` | Builds every `.tex` file in the root and in `cvs/` |
-| `docker compose run --rm -e TARGET=example.tex cv-builder` | Builds one file; separate several with spaces |
+| `docker compose run --rm -e TARGET=my-cv.tex cv-builder` | Builds one file; separate several with spaces |
 | `docker compose run --rm cv-watch` | Rebuilds `cvs/Ehsan_Khan__FullStack.tex` on save; change the target in `docker-compose.yml` |
 
 Rebuild the image with `docker compose build` after changing anything in `docker/` or the `Dockerfile`.
@@ -49,7 +48,7 @@ Rebuild the image with `docker compose build` after changing anything in `docker
 Needs TeX Live 2023 or newer with `latexmk`, `fontspec`, `luaotfload`, `microtype`, `carlito`, `geometry`, `xcolor`, `graphics` and `hyperref`. Run from the repository root, where `latexmk` reads `latexmkrc`:
 
 ```sh
-latexmk -lualatex -outdir=pdf -auxdir=build example.tex
+latexmk -lualatex -outdir=pdf -auxdir=build my-cv.tex
 ```
 
 Plain `lualatex` does not read `latexmkrc`, so it cannot find a class in `theme/`. To use plain `lualatex`, copy the three theme files next to your document.
@@ -71,7 +70,7 @@ A complete document:
 
 \cvname{Jane Doe}
 \cvsubtitle{Software Engineer}
-\cvphoto{photo.jpg}
+% \cvphoto{photo.jpg}
 
 \cvlocation{Berlin, Germany}
 \cvemail{jane@example.com}
@@ -120,7 +119,7 @@ Software engineer who builds reliable web services.
 \end{document}
 ```
 
-The header commands go in the preamble and print at `\makecvheader`. Contact items appear in the order you write them.
+The header commands go in the preamble and print at `\makecvheader`. Remove the `%` before `\cvphoto` once your photo is in place. Contact items appear in the order you write them.
 
 For a CV in several files, keep the documents in `cvs/` and shared content in `cvs/sections/`, as this repository does. Paths are written from `cvs/`, for example `\input{sections/profile}` and `\cvphoto{assets/me.png}`. Build these from the repository root with `TARGET=cvs/<name>.tex`.
 
