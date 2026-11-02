@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: clearcv/latex:latest
+    image: ghcr.io/ehsan18t/clearcv-latex:latest
     working_dir: /work
     volumes:
       - .:/work
@@ -17,7 +17,7 @@ services:
 
   # Continuous rebuild on save: docker compose run --rm cv-watch
   cv-watch:
-    image: clearcv/latex:latest
+    image: ghcr.io/ehsan18t/clearcv-latex:latest
     build:
       context: .
       dockerfile: Dockerfile
