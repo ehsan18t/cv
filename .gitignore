@@ -23,6 +23,7 @@ out/
 _build/
 latex.out/
 build/
+pdf/
 
 # Editor / OS
 .DS_Store
