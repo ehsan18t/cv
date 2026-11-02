@@ -10,7 +10,7 @@ A single-column CV class for LuaLaTeX. It reads well for people and extracts in 
 - [ATS and accessibility](#ats-and-accessibility)
 - [Customising](#customising)
 - [Troubleshooting](#troubleshooting)
-- [Credits](#credits)
+- [License](#license)
 
 ## Repository layout
 
@@ -317,6 +317,8 @@ To add one, give `\cvdeficon` a name, the size of its drawing area and its outli
 | ``File `photo.jpg' not found: using draft setting`` | Image paths are written from the document's folder or a folder on the search path. |
 | An old layout stays after a change | Delete `build/` and build again. |
 
-## Credits
+## License
+
+The theme is released under the [MIT License](LICENSE). The bundled icons keep their own licenses, listed below.
 
 Icons: [Font Awesome Free 5.15.4](https://fontawesome.com/license/free) (CC BY 4.0) and [Simple Icons](https://simpleicons.org) (CC0). Default font: [Carlito](https://ctan.org/pkg/carlito) (SIL OFL).
