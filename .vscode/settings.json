@@ -2,19 +2,6 @@
   "editor.wordWrap": "on",
   "latex-workshop.latex.tools": [
     {
-      "name": "lualatex",
-      "command": "lualatex",
-      "args": [
-        "-synctex=0",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        
-        "-aux-directory=build",
-        "-output-directory=%OUTDIR%",
-        "%DOCFILE%"
-      ]
-    },
-    {
       "name": "latexmk-lualatex",
       "command": "latexmk",
       "args": [
@@ -22,7 +9,6 @@
         "-interaction=nonstopmode",
         "-file-line-error",
         "-lualatex",
-        
         "-auxdir=build",
         "-outdir=%OUTDIR%",
         "%DOCFILE%"
@@ -31,12 +17,10 @@
   ],
   "latex-workshop.latex.recipes": [
     {
-      "name": "LuaLaTeX",
-      "tools": ["lualatex"]
-    },
-    {
       "name": "Latexmk (LuaLaTeX)",
-      "tools": ["latexmk-lualatex"]
+      "tools": [
+        "latexmk-lualatex"
+      ]
     }
   ],
   "latex-workshop.latex.autoBuild.recipe": "Latexmk (LuaLaTeX)",
@@ -61,5 +45,10 @@
   "latex-workshop.message.error.show": true,
   "latex-workshop.message.warning.show": false,
   "latex-workshop.intellisense.package.enabled": true,
-  "cSpell.words": ["Dockerized", "Pino", "Valkey", "Vitest"]
+  "cSpell.words": [
+    "Dockerized",
+    "Pino",
+    "Valkey",
+    "Vitest"
+  ]
 }

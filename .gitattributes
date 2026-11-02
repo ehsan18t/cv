@@ -3,3 +3,4 @@
 
 docker/*.sh text eol=lf
 docker/*.txt text eol=lf
+latexmkrc text eol=lf
