@@ -42,11 +42,25 @@ ENV PATH="/usr/local/texlive/bin/x86_64-linux:${PATH}"
 RUN set -eux; \
     tlmgr option repository "${TEXLIVE_MIRROR}"; \
     tlmgr install $(grep -vE '^\s*(#|$)' /tmp/texlive-packages.txt); \
+    cd /usr/local/texlive; \
     rm -rf \
-      /usr/local/texlive/texmf-dist/doc \
-      /usr/local/texlive/texmf-dist/source \
-      /usr/local/texlive/tlpkg/backups \
-      /tmp/texlive-packages.txt
+      texmf-dist/doc \
+      texmf-dist/source \
+      texmf-dist/fonts/afm \
+      texmf-dist/fonts/source \
+      texmf-dist/fonts/pk \
+      tlpkg \
+      install-tl \
+      install-tl.log \
+      /tmp/texlive-packages.txt; \
+    find texmf-dist/fonts/type1 -mindepth 2 -maxdepth 2 -type d \
+      ! -path '*/public/amsfonts' ! -path '*/public/lm' -exec rm -rf {} +; \
+    find texmf-var/web2c -mindepth 1 -maxdepth 1 -type d ! -name luahbtex -exec rm -rf {} +; \
+    mktexlsr; \
+    cd bin/x86_64-linux; \
+    rm -f tlmgr pdftex pdflatex etex latex tex xdvi* dvi* xdvipdfmx *pdfmx pk* gf* mf* mft mk* \
+      otf* odv* ovf* ovp* ofm* opl* tf* vf* vp* web* tangle weave ctangle cweave twill \
+      bibtex bibtex8 makeindex mendex upbibtex
 
 FROM debian:trixie-slim
 
@@ -67,6 +81,11 @@ COPY --from=texlive /usr/local/texlive /usr/local/texlive
 
 # Warm the luaotfload cache so the first real build does not pay for a full font scan.
 RUN luaotfload-tool --update
+
+# tlmgr exits 0 when a mirror download fails, leaving a broken toolchain.
+RUN latexmk -v > /dev/null && \
+    kpsewhich fontspec.sty luaotfload.sty microtype.sty geometry.sty xcolor.sty \
+      graphicx.sty hyperref.sty Carlito-Regular.ttf > /dev/null
 
 COPY docker/entrypoint.sh /usr/local/bin/simplycv-latex
 RUN chmod +x /usr/local/bin/simplycv-latex

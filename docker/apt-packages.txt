@@ -1,6 +1,4 @@
 # Runtime OS packages for the final image.
 # TeX Live itself is installed from CTAN in the builder stage, not from apt.
 
-ca-certificates
-curl
 perl

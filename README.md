@@ -41,7 +41,7 @@ The PDF is written to `pdf/my-cv.pdf`.
 | `docker compose run --rm -e TARGET=my-cv.tex cv-builder` | Builds one file; separate several with spaces |
 | `docker compose run --rm cv-watch` | Rebuilds `cvs/Ehsan_Khan__FullStack.tex` on save; change the target in `docker-compose.yml` |
 
-Rebuild the image with `docker compose build` after changing anything in `docker/` or the `Dockerfile`.
+Rebuild the image with `docker compose build` after changing anything in `docker/` or the `Dockerfile`. To add a TeX package, list it in `docker/texlive-packages.txt` and rebuild. To move to the newest Debian and TeX Live packages, run `docker compose build --pull --no-cache`.
 
 ### Local TeX Live
 
