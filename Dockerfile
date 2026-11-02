@@ -1,12 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# ---------------------------------------------------------------------------
-# Stage 1: install a minimal TeX Live from CTAN.
-#
-# Debian's texlive-*-extra metapackages pull in several gigabytes to provide a
-# handful of CTAN packages, so the toolchain is installed from upstream instead
-# and trimmed to exactly what simplycv.cls requires.
-# ---------------------------------------------------------------------------
+# Debian's texlive-*-extra metapackages pull in several gigabytes for a handful
+# of CTAN packages, so TeX Live comes from upstream, trimmed to what simplycv.cls needs.
 FROM debian:trixie-slim AS texlive
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -53,9 +48,6 @@ RUN set -eux; \
       /usr/local/texlive/tlpkg/backups \
       /tmp/texlive-packages.txt
 
-# ---------------------------------------------------------------------------
-# Stage 2: runtime image.
-# ---------------------------------------------------------------------------
 FROM debian:trixie-slim
 
 LABEL org.opencontainers.image.source="https://github.com/ehsan18t/cv" \
@@ -76,7 +68,6 @@ COPY --from=texlive /usr/local/texlive /usr/local/texlive
 # Warm the luaotfload cache so the first real build does not pay for a full font scan.
 RUN luaotfload-tool --update
 
-# Provide an entrypoint script that wraps latexmk with the required defaults.
 COPY docker/entrypoint.sh /usr/local/bin/simplycv-latex
 RUN chmod +x /usr/local/bin/simplycv-latex
 
